@@ -9,9 +9,11 @@
                 tools:context="com.brianroper.tattome.ListActivityFragment"
                 tools:showIn="@layout/activity_list">
 
-<ImageView
+<android.support.v7.widget.RecyclerView
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:src="@drawable/tattooplaceholder"
-    android:id="@+id/image_placeholder"/>
+    android:layout_height="match_parent"
+    android:id="@+id/tattoo_list">
+
+
+</android.support.v7.widget.RecyclerView>
 </RelativeLayout>
