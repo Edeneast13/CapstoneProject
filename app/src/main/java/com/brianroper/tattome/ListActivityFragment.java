@@ -84,7 +84,7 @@ public class ListActivityFragment extends Fragment {
 
         String data = getTattooUrls();
 
-        String[] splitData = data.split("<li class=\"article\" id=\"post-15538\">");
+        String[] splitData = data.split("<ul class=\"mcol\">");
 
         Pattern tattooPattern = Pattern.compile("src=\"(.*?)\"");
         Matcher tattooMatcher = tattooPattern.matcher(splitData[1]);
@@ -93,9 +93,6 @@ public class ListActivityFragment extends Fragment {
 
             mUrlList.add(tattooMatcher.group(1));
         }
-
-        mUrlList.remove(16);
-        mUrlList.remove(15);
 
         for (int i = 0; i < mUrlList.size(); i++) {
 

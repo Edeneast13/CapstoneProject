@@ -1,8 +1,7 @@
 package com.brianroper.tattome;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,12 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by brianroper on 5/18/16.
@@ -36,12 +30,24 @@ public class TattooAdapter extends RecyclerView.Adapter<TattooAdapter.ViewHolder
     }
 
     @Override
-    public TattooAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TattooAdapter.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
 
-        CardView cardView = (CardView)mLayoutInflater.inflate(
+        final View cardView = mLayoutInflater.inflate(
                 R.layout.list_image_item,parent, false);
 
-        TattooAdapter.ViewHolder viewHolder = new ViewHolder(cardView);
+        final ViewHolder viewHolder = new ViewHolder(cardView);
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, DetailActivity.class);
+                int position = viewHolder.getAdapterPosition();
+                String url = mUrlList.get(position);
+                intent.putExtra("url", url);
+                Log.i("StringUrl: ", url);
+                mContext.startActivity(intent);
+
+            }
+        });
 
         return viewHolder;
     }
@@ -50,6 +56,7 @@ public class TattooAdapter extends RecyclerView.Adapter<TattooAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
 
        holder.setImageView(mContext, mUrlList.get(position));
+        Log.i("POSITION: ", mUrlList.get(position));
     }
 
     @Override
@@ -62,18 +69,21 @@ public class TattooAdapter extends RecyclerView.Adapter<TattooAdapter.ViewHolder
 
         public ImageView mImageView;
         public CardView mCardView;
-        public TattooAdapter mRecyclerView;
-        public Context mContext;
 
-        public ViewHolder(CardView cardView) {
+        public ViewHolder(View cardView) {
             super(cardView);
 
-            mCardView = cardView;
-            mImageView = (ImageView)mCardView.findViewById(R.id.card_imageview);
+            mCardView = (CardView)cardView.findViewById(R.id.card_view);
+            mImageView = (ImageView)cardView.findViewById(R.id.card_imageview);
         }
 
         public void setImageView(Context context, String url){
-            Picasso.with(context).load(url).fit().into(mImageView);
+
+            Picasso.with(context).load(url)
+                    .placeholder(R.drawable.tattooplaceholder)
+                    .fit()
+                    .centerCrop()
+                    .into(mImageView);
         }
     }
 }

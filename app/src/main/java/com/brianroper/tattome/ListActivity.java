@@ -22,6 +22,9 @@ public class ListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getApplicationContext()
+                        .getResources()
+                        .getString(R.string.app_title));
 
         final Firebase ref = new Firebase("https://tattoome.firebaseio.com/");
 
