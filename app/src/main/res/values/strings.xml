@@ -16,4 +16,8 @@
     <string name="title_activity_create_account">CreateAccountActivity</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_detail">DetailActivity</string>
+
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_closed">Drawer closed</string>
+    <string name="nav_featured_title">Featured</string>
 </resources>
