@@ -53,10 +53,25 @@ public class ListActivityFragment extends Fragment {
 
     public String getTattooUrls(){
 
+        Bundle args = getArguments();
+        String searchParam ="";
+
+        if(args != null){
+
+            searchParam = args.getString("category");
+            Log.i("search param", searchParam);
+        }
+
         String result = "";
         Uri.Builder builder = new Uri.Builder();
         builder.scheme(URL_SCHEME);
         builder.authority(BASE_TATTOO_URL);
+
+        if(!(searchParam.equals(null))){
+
+            builder.appendPath(searchParam);
+        }
+
         String url = builder.build().toString();
 
         TattooTask tattooTask = new TattooTask();

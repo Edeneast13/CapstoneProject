@@ -1,6 +1,7 @@
 package com.brianroper.tattome;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 
@@ -41,6 +43,7 @@ public class ListActivity extends AppCompatActivity {
 
         mActionBarDrawerToggle= setupDrawerToggle();
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+        mDrawerLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getApplicationContext()
@@ -48,7 +51,6 @@ public class ListActivity extends AppCompatActivity {
                         .getString(R.string.app_title));
 
         final Firebase ref = new Firebase("https://tattoome.firebaseio.com/");
-
     }
 
     @Override
@@ -96,20 +98,48 @@ public class ListActivity extends AppCompatActivity {
 
     public void selectDrawerItem(MenuItem menuItem){
 
+        Bundle args = new Bundle();
+        Intent intent = new Intent(this, ListActivity.class);
+
         switch(menuItem.getItemId()){
 
             case R.id.nav_first_item:
 
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, new ListActivityFragment())
-                            .commit();
+                args.putString("category", "featured");
+
+                startActivity(intent);
+
                 break;
 
             case R.id.nav_second_item:
 
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, new ListActivityFragment())
-                            .commit();
+                args.putString("category", "animal-tattoos");
+
+                startActivity(intent);
+
+                break;
+
+            case R.id.nav_third_item:
+
+                //start favorites activity here
+                Toast.makeText(getApplicationContext(), "Not yet implemented, be patient please",
+                        Toast.LENGTH_LONG).show();
+
+                break;
+
+            case R.id.nav_fourth_item:
+
+                //start settings activity here
+                Toast.makeText(getApplicationContext(), "Not yet implemented, be patient please",
+                        Toast.LENGTH_LONG).show();
+
+                break;
+
+            case R.id.nav_fifth_item:
+
+                //logout the user
+                Toast.makeText(getApplicationContext(), "Not yet implemented, be patient please",
+                        Toast.LENGTH_LONG).show();
 
                 break;
         }

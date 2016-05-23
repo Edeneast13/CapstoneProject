@@ -21,4 +21,10 @@
     <string name="drawer_closed">Drawer closed</string>
     <string name="nav_featured_title">Featured</string>
     <string name="categories_title">Categories</string>
+    <string name="favorites_title">Favorites</string>
+    <string name="settings_title">Settings</string>
+    <string name="logout_title">Log Out</string>
+
+    <string name="cat_featured">featured</string>
+    <string name="cat_animal">animal-tattoos</string>
 </resources>
