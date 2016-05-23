@@ -42,8 +42,6 @@ public class ListActivity extends AppCompatActivity {
         mActionBarDrawerToggle= setupDrawerToggle();
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
 
-        //TODO: drawer functionality
-
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getApplicationContext()
                         .getResources()
@@ -71,7 +69,8 @@ public class ListActivity extends AppCompatActivity {
         switch (item.getItemId()){
 
             case android.R.id.home:
-                mDrawerLayout.isDrawerOpen(GravityCompat.START);
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                //mDrawerLayout.isDrawerOpen(GravityCompat.START);
                 return true;
 
         }
@@ -97,15 +96,22 @@ public class ListActivity extends AppCompatActivity {
 
     public void selectDrawerItem(MenuItem menuItem){
 
-        Fragment fragment = null;
-
-        Class fragmentClass;
-
         switch(menuItem.getItemId()){
 
             case R.id.nav_first_item:
 
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new ListActivityFragment())
+                            .commit();
+                break;
 
+            case R.id.nav_second_item:
+
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new ListActivityFragment())
+                            .commit();
+
+                break;
         }
     }
 
