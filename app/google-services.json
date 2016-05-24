@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1023086255089",
+    "firebase_url": "https://tattoo-b7ce6.firebaseio.com",
+    "project_id": "tattoo-b7ce6",
+    "storage_bucket": "tattoo-b7ce6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023086255089:android:6d8ca556f54068a3",
+        "android_client_info": {
+          "package_name": "com.brianroper.tattome"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1023086255089-nv0d9n5jeni7mhnr99l6spamrcrc0361.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [{
+        "current_key": "AIzaSyBGNrsl2uUumjoVsHE5cfdhKLnBP9vYizI"
+      }],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

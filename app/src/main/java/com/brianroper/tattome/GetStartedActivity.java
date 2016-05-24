@@ -18,6 +18,7 @@ import android.widget.EditText;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +39,10 @@ public class GetStartedActivity extends AppCompatActivity {
         mEmailEntry = (EditText)findViewById(R.id.emailText);
         mPasswordEntry = (EditText)findViewById(R.id.passwordText);
 
-        autoLoginWithSharedPref();
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+
+        autoLoginWithSharedPref(sharedPreferences);
     }
 
     public void loginAccount(View v){
@@ -62,6 +66,7 @@ public class GetStartedActivity extends AppCompatActivity {
     public void authenticateAccountLogin(final String username, final String password){
 
         Firebase ref = new Firebase(FIREBASE_URL);
+
         ref.authWithPassword(username, password, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
@@ -69,9 +74,11 @@ public class GetStartedActivity extends AppCompatActivity {
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-                sharedPreferences.edit().putString("username", username);
-                sharedPreferences.edit().putString("password", password);
+                if(sharedPreferences.getString("username", "").equals(null)){
 
+                    sharedPreferences.edit().putString("username", username);
+                    sharedPreferences.edit().putString("password", password);
+                }
 
                 Intent i = new Intent(getApplicationContext(), ListActivity.class);
                 i.putExtra("email", mEmailEntry.getText().toString());
@@ -86,10 +93,7 @@ public class GetStartedActivity extends AppCompatActivity {
         });
     }
 
-    public void autoLoginWithSharedPref(){
-
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    public void autoLoginWithSharedPref(SharedPreferences sharedPreferences){
 
         String username = sharedPreferences.getString("username", "");
         String password = sharedPreferences.getString("password", "");
@@ -98,11 +102,8 @@ public class GetStartedActivity extends AppCompatActivity {
 
         if(username.length()>0 && password.length()>0){
 
-            mEmailEntry.setText(username);
-            mPasswordEntry.setText(password);
-
             authenticateAccountLogin
-                    (mEmailEntry.getText().toString(), mPasswordEntry.getText().toString());
+                    (username, password);
         }
     }
 }

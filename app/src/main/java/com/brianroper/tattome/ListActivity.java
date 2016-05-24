@@ -29,6 +29,7 @@ public class ListActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private NavigationView mNavigationView;
     private Toolbar mToolbar;
+    private Firebase ref = new Firebase("https://tattoome.firebaseio.com/");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +44,12 @@ public class ListActivity extends AppCompatActivity {
 
         mActionBarDrawerToggle= setupDrawerToggle();
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
-        mDrawerLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getApplicationContext()
-                        .getResources()
-                        .getString(R.string.app_title));
+                .getResources()
+                .getString(R.string.app_title));
 
-        final Firebase ref = new Firebase("https://tattoome.firebaseio.com/");
     }
 
     @Override
@@ -58,6 +57,11 @@ public class ListActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
 
         mActionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 
     @Override

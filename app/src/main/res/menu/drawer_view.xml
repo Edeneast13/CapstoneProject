@@ -1,32 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <group android:checkableBehavior="single">
+        <group android:checkableBehavior="single"
+               android:id="@+id/group_top">
             <item
                 android:id="@+id/nav_first_item"
                 android:title="@string/nav_featured_title"
-                android:checked="true"/>
+                android:checked="true"
+                android:icon="@drawable/ic_new_releases_black_24dp"/>
 
             <item
                 android:id="@+id/nav_second_item"
-                android:title="@string/categories_title"/>
+                android:title="@string/categories_title"
+                android:icon="@drawable/ic_view_list_black_18dp"/>
 
             <item
                 android:id="@+id/nav_third_item"
-                android:title="@string/favorites_title"/>
+                android:title="@string/favorites_title"
+                android:icon="@drawable/ic_star_rate_black_18dp"/>
 
         </group>
 
         <group
-            android:checkableBehavior="single">
+            android:checkableBehavior="single"
+            android:id="@+id/group_bottom">
 
             <item
                 android:id="@+id/nav_fourth_item"
-                android:title="@string/settings_title"/>
+                android:title="@string/settings_title"
+                android:icon="@drawable/ic_settings_black_24dp"/>
 
             <item
                 android:id="@+id/nav_fifth_item"
-                android:title="@string/logout_title"/>
+                android:title="@string/logout_title"
+                android:icon="@drawable/ic_power_settings_new_black_18dp"/>
         </group>
 
 </menu>
