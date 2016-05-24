@@ -4,45 +4,75 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.firebase.client.AuthData;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class GetStartedActivity extends AppCompatActivity {
 
     private EditText mEmailEntry;
     private EditText mPasswordEntry;
-    final String FIREBASE_URL = "https://tattoome.firebaseio.com/";
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_started);
 
-        Firebase.setAndroidContext(this);
-
         mEmailEntry = (EditText)findViewById(R.id.emailText);
         mPasswordEntry = (EditText)findViewById(R.id.passwordText);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(FirebaseAuth firebaseAuth) {
+
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if(user != null){
+
+                    Log.i("Status: ", "logged in");
+                }
+                else{
+
+                    Log.i("Status: ", "not logged in");
+                }
+            }
+        };
 
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
 
         autoLoginWithSharedPref(sharedPreferences);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mAuthStateListener!=null){
+            mAuth.removeAuthStateListener(mAuthStateListener);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 
     public void loginAccount(View v){
@@ -65,32 +95,27 @@ public class GetStartedActivity extends AppCompatActivity {
 
     public void authenticateAccountLogin(final String username, final String password){
 
-        Firebase ref = new Firebase(FIREBASE_URL);
+            mAuth.signInWithEmailAndPassword(username, password)
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(Task<AuthResult> task) {
 
-        ref.authWithPassword(username, password, new Firebase.AuthResultHandler() {
-            @Override
-            public void onAuthenticated(AuthData authData) {
+                            if (!task.isSuccessful()) {
 
-                SharedPreferences sharedPreferences =
-                        PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                Toast.makeText(GetStartedActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                            else{
 
-                if(sharedPreferences.getString("username", "").equals(null)){
+                                Toast.makeText(getApplicationContext(), getString(R.string.login_welcome)
+                                    ,Toast.LENGTH_LONG).show();
 
-                    sharedPreferences.edit().putString("username", username);
-                    sharedPreferences.edit().putString("password", password);
-                }
-
-                Intent i = new Intent(getApplicationContext(), ListActivity.class);
-                i.putExtra("email", mEmailEntry.getText().toString());
-                startActivity(i);
-            }
-
-            @Override
-            public void onAuthenticationError(FirebaseError firebaseError) {
-
-                Log.i("LOGIN:", "unsuccessful");
-            }
-        });
+                                Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                                intent.putExtra("category", "featured");
+                                startActivity(intent);
+                            }
+                        }
+                    });
     }
 
     public void autoLoginWithSharedPref(SharedPreferences sharedPreferences){

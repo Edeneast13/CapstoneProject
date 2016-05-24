@@ -15,11 +15,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.firebase.client.Firebase;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.ByteArrayOutputStream;
 
@@ -29,7 +33,6 @@ public class ListActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private NavigationView mNavigationView;
     private Toolbar mToolbar;
-    private Firebase ref = new Firebase("https://tattoome.firebaseio.com/");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,14 +105,11 @@ public class ListActivity extends AppCompatActivity {
 
     public void selectDrawerItem(MenuItem menuItem){
 
-        Bundle args = new Bundle();
-        Intent intent = new Intent(this, ListActivity.class);
+        final Intent intent = new Intent(this, ListActivity.class);
 
         switch(menuItem.getItemId()){
 
             case R.id.nav_first_item:
-
-                args.putString("category", "featured");
 
                 startActivity(intent);
 
@@ -117,9 +117,30 @@ public class ListActivity extends AppCompatActivity {
 
             case R.id.nav_second_item:
 
-                args.putString("category", "animal-tattoos");
+                new MaterialDialog.Builder(this)
+                        .title(R.string.categories_title)
+                        .items(R.array.category_items)
+                        .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
 
-                startActivity(intent);
+                                if(dialog.getSelectedIndex() == 0){
+
+                                    intent.putExtra("category", "animal-tattoos");
+
+                                }
+                                else if(dialog.getSelectedIndex() == 1){
+
+                                    intent.putExtra("category", "cartoon-tattoos");
+                                }
+
+                                startActivity(intent);
+
+                                return true;
+                            }
+                        })
+                        .positiveText(R.string.box_choice)
+                        .show();
 
                 break;
 
@@ -141,9 +162,10 @@ public class ListActivity extends AppCompatActivity {
 
             case R.id.nav_fifth_item:
 
-                //logout the user
-                Toast.makeText(getApplicationContext(), "Not yet implemented, be patient please",
-                        Toast.LENGTH_LONG).show();
+                FirebaseAuth.getInstance().signOut();
+
+                Intent logoutIntent = new Intent(getApplicationContext(), GetStartedActivity.class);
+                startActivity(logoutIntent);
 
                 break;
         }

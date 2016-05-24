@@ -11,19 +11,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-
-import java.util.Map;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
     private EditText mEmailEntry;
     private EditText mPasswordEntry;
-    final String FIREBASE_URL = "https://tattoome.firebaseio.com/";
     String mEmail ="";
     String mPass = "";
 
@@ -32,10 +31,42 @@ public class CreateAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
-        Firebase.setAndroidContext(this);
-
         mEmailEntry = (EditText)findViewById(R.id.create_email);
         mPasswordEntry = (EditText)findViewById(R.id.create_password);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(FirebaseAuth firebaseAuth) {
+
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                if(user!=null){
+
+
+                }
+                else{
+
+
+                }
+            }
+        };
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mAuthStateListener != null){
+
+            mAuth.removeAuthStateListener(mAuthStateListener);
+        }
     }
 
     public void createAccount(View v){
@@ -60,25 +91,26 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     public void firebaseAccountCreation(String username, String password){
 
-        Firebase ref = new Firebase(FIREBASE_URL);
-        ref.createUser(username, password, new Firebase.ValueResultHandler<Map<String,Object>>() {
+        mAuth.createUserWithEmailAndPassword(username, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(Task<AuthResult> task) {
 
-            @Override
-            public void onSuccess(Map<String, Object> stringObjectMap) {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(CreateAccountActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else{
 
-                Toast.makeText(getApplicationContext(), getString(R.string.creation_success_toast),
-                        Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(),
+                                    getString(R.string.creation_success_toast),
+                                    Toast.LENGTH_LONG).show();
 
-                Intent i = new Intent(getApplicationContext(), ListActivity.class);
-                i.putExtra("email", mEmailEntry.getText().toString());
-                startActivity(i);
-            }
-
-            @Override
-            public void onError(FirebaseError firebaseError) {
-
-                Log.i("Creation Failed: ", firebaseError.toString());
-            }
-        });
+                            Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                            intent.putExtra("category", "featured");
+                            startActivity(intent);
+                        }
+                    }
+                });
     }
 }

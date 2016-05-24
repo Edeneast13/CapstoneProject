@@ -1,5 +1,6 @@
 package com.brianroper.tattome;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -53,14 +54,9 @@ public class ListActivityFragment extends Fragment {
 
     public String getTattooUrls(){
 
-        Bundle args = getArguments();
         String searchParam ="";
 
-        if(args != null){
-
-            searchParam = args.getString("category");
-            Log.i("search param", searchParam);
-        }
+        searchParam = getActivity().getIntent().getStringExtra("category");
 
         String result = "";
         Uri.Builder builder = new Uri.Builder();
@@ -69,7 +65,15 @@ public class ListActivityFragment extends Fragment {
 
         if(!(searchParam.equals(null))){
 
-            builder.appendPath(searchParam);
+            if(searchParam.equals("featured")){
+
+
+            }
+            else{
+
+                Log.i("Intent Extra: ", searchParam);
+                //builder.appendPath(searchParam);
+            }
         }
 
         String url = builder.build().toString();

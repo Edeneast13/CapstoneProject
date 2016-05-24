@@ -11,6 +11,7 @@
     <!-- Create Account activity strings -->
     <string name="create_button_text">Sign Up!</string>
     <string name="creation_success_toast">Success! Welcome to Tattoo Me</string>
+    <string name="login_welcome">Welcome Back!</string>
 
     <string name="title">Tattoo Me</string>
     <string name="title_activity_create_account">CreateAccountActivity</string>
@@ -27,4 +28,5 @@
 
     <string name="cat_featured">featured</string>
     <string name="cat_animal">animal-tattoos</string>
+    <string name="box_choice">Choose</string>
 </resources>
