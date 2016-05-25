@@ -2,10 +2,12 @@ package com.brianroper.tattome;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -21,6 +23,7 @@ import android.view.View;
 import android.widget.Toast;
 
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,6 +36,7 @@ public class ListActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private NavigationView mNavigationView;
     private Toolbar mToolbar;
+    private Bundle mBundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,11 +109,11 @@ public class ListActivity extends AppCompatActivity {
 
     public void selectDrawerItem(MenuItem menuItem){
 
-        final Intent intent = new Intent(this, ListActivity.class);
-
         switch(menuItem.getItemId()){
 
             case R.id.nav_first_item:
+
+                Intent intent = new Intent(getApplicationContext(), ListActivity.class);
 
                 startActivity(intent);
 
@@ -120,26 +124,79 @@ public class ListActivity extends AppCompatActivity {
                 new MaterialDialog.Builder(this)
                         .title(R.string.categories_title)
                         .items(R.array.category_items)
-                        .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                        .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                             @Override
-                            public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
 
-                                if(dialog.getSelectedIndex() == 0){
-
-                                    intent.putExtra("category", "animal-tattoos");
-
-                                }
-                                else if(dialog.getSelectedIndex() == 1){
-
-                                    intent.putExtra("category", "cartoon-tattoos");
-                                }
-
-                                startActivity(intent);
 
                                 return true;
                             }
                         })
                         .positiveText(R.string.box_choice)
+                        .onAny(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(MaterialDialog dialog, DialogAction which) {
+
+                                Intent i = new Intent(getApplicationContext(), ListActivity.class);
+                                String category = "category";
+                                String[] array = new String[]{
+                                        "animal-tattoos",
+                                        "bug-tattoos",
+                                        "cartoon-tattoos",
+                                        "cute-tattoos-2",
+                                        "geometric-tattoos-2",
+                                        "henna",
+                                        "mandala-tattoos",
+                                        "plant-tattoos",
+                                        "religious-tattoos",
+                                        "watercolor-tattoos"
+                                };
+
+                                switch (dialog.getSelectedIndex()){
+
+                                    case 0:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 1:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 2:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 3:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 4:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 5:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 6:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 7:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 8:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 9:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+                                }
+                                startActivity(i);
+                            }
+                        })
                         .show();
 
                 break;

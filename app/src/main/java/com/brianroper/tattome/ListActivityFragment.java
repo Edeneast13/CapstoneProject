@@ -63,16 +63,16 @@ public class ListActivityFragment extends Fragment {
         builder.scheme(URL_SCHEME);
         builder.authority(BASE_TATTOO_URL);
 
-        if(!(searchParam.equals(null))){
+        if(searchParam != null){
 
             if(searchParam.equals("featured")){
 
-
+                Log.i("Intent Extra: ", searchParam);
             }
             else{
 
                 Log.i("Intent Extra: ", searchParam);
-                //builder.appendPath(searchParam);
+                builder.appendPath(searchParam);
             }
         }
 
@@ -103,7 +103,7 @@ public class ListActivityFragment extends Fragment {
 
         String data = getTattooUrls();
 
-        String[] splitData = data.split("<ul class=\"mcol\">");
+        String[] splitData = data.split("id=\"post-0\">");
 
         Pattern tattooPattern = Pattern.compile("src=\"(.*?)\"");
         Matcher tattooMatcher = tattooPattern.matcher(splitData[1]);

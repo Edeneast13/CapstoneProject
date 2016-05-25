@@ -3,8 +3,15 @@
 
     <string-array name="category_items">
         <item>Animal</item>
+        <item>Bug</item>
         <item>Cartoon</item>
+        <item>Cute</item>
+        <item>Geometric</item>
+        <item>Henna</item>
+        <item>Mandala</item>
         <item>Plant</item>
+        <item>Religious</item>
+        <item>Watercolor</item>
 
     </string-array>
 </resources>
