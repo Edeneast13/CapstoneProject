@@ -7,14 +7,26 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.internal.SignInButtonConfig;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.squareup.picasso.OkHttpDownloader;
 
 public class GetStartedActivity extends AppCompatActivity {
 
@@ -22,6 +34,10 @@ public class GetStartedActivity extends AppCompatActivity {
     private EditText mPasswordEntry;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private GoogleApiClient mGoogleApiClient;
+    final int RC_SIGN_IN = 9001;
+    private SignInButton mGoogleSignIn;
+    private GoogleApiClient.OnConnectionFailedListener mOnConnectionFailedListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +46,7 @@ public class GetStartedActivity extends AppCompatActivity {
 
         mEmailEntry = (EditText)findViewById(R.id.emailText);
         mPasswordEntry = (EditText)findViewById(R.id.passwordText);
+        mGoogleSignIn = (SignInButton)findViewById(R.id.google_login_button);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -41,7 +58,12 @@ public class GetStartedActivity extends AppCompatActivity {
 
                 if(user != null){
 
-                    Log.i("Status: ", "logged in");
+                    Toast.makeText(getApplicationContext(), getString(R.string.login_welcome)
+                            , Toast.LENGTH_LONG).show();
+
+                    Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                    intent.putExtra("category", "featured");
+                    startActivity(intent);
                 }
                 else{
 
@@ -50,16 +72,25 @@ public class GetStartedActivity extends AppCompatActivity {
             }
         };
 
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestServerAuthCode(getResources().getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
 
-        autoLoginWithSharedPref(sharedPreferences);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, mOnConnectionFailedListener)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        googleLogin();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthStateListener);
+
+
     }
 
     @Override
@@ -73,6 +104,32 @@ public class GetStartedActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == RC_SIGN_IN){
+
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+    }
+
+    private void handleSignInResult(GoogleSignInResult result){
+
+        Log.d("TAG", "handleSignInResult:" + result.isSuccess());
+        if(result.isSuccess()){
+
+            GoogleSignInAccount account = result.getSignInAccount();
+            firebaseAuthWithGoogle(account);
+        }
+        else{
+
+            Toast.makeText(getApplicationContext(), "Authentication failed",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     public void loginAccount(View v){
@@ -104,11 +161,10 @@ public class GetStartedActivity extends AppCompatActivity {
 
                                 Toast.makeText(GetStartedActivity.this, "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
-                            }
-                            else{
+                            } else {
 
                                 Toast.makeText(getApplicationContext(), getString(R.string.login_welcome)
-                                    ,Toast.LENGTH_LONG).show();
+                                        , Toast.LENGTH_LONG).show();
 
                                 Intent intent = new Intent(getApplicationContext(), ListActivity.class);
                                 intent.putExtra("category", "featured");
@@ -118,17 +174,40 @@ public class GetStartedActivity extends AppCompatActivity {
                     });
     }
 
-    public void autoLoginWithSharedPref(SharedPreferences sharedPreferences){
+    public void googleLogin(){
 
-        String username = sharedPreferences.getString("username", "");
-        String password = sharedPreferences.getString("password", "");
+        mGoogleSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        Log.i("username: ", username);
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+        });
+    }
 
-        if(username.length()>0 && password.length()>0){
+    private void firebaseAuthWithGoogle(GoogleSignInAccount account){
 
-            authenticateAccountLogin
-                    (username, password);
-        }
+        AuthCredential credential = GoogleAuthProvider
+                .getCredential(account.getIdToken(), null);
+
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(Task<AuthResult> task) {
+
+                        if(!task.isSuccessful()){
+
+                            Toast.makeText(getApplicationContext(), "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+
+                            Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+                            intent.putExtra("category", "featured");
+                            startActivity(intent);
+                        }
+                    }
+                });
     }
 }

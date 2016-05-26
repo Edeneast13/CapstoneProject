@@ -36,7 +36,6 @@ public class ListActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private NavigationView mNavigationView;
     private Toolbar mToolbar;
-    private Bundle mBundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
