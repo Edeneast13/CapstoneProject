@@ -23,8 +23,7 @@ public class DbHandler extends SQLiteOpenHelper {
         String query = "CREATE TABLE "+ FavoritesContract.FavoritesEntry.TABLE_NAME + "(" +
                 FavoritesContract.FavoritesEntry.COLUMN_ID + " INTEGER PRIMARY KEY, " +
                 FavoritesContract.FavoritesEntry.COLUMN_TITLE + " TEXT, " +
-                FavoritesContract.FavoritesEntry.COLUMN_TITLE + " TEXT, " +
-                FavoritesContract.FavoritesEntry.COLUMN_IMAGE + " BLOB, " +
+                FavoritesContract.FavoritesEntry.COLUMN_IMAGE + " BLOB" +
                 ");";
 
         db.execSQL(query);

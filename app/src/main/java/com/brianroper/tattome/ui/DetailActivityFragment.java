@@ -43,6 +43,7 @@ public class DetailActivityFragment extends Fragment {
 
         populateImageWithIntent();
         setFloatingActionButton();
+        setDefaultFabImageResource();
 
         return root;
     }
@@ -66,6 +67,8 @@ public class DetailActivityFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                Log.i("FAB", "clicked");
+
                 DbHandler dbHandler = new DbHandler(getContext());
                 SQLiteDatabase sqLiteDatabase;
 
@@ -80,7 +83,7 @@ public class DetailActivityFragment extends Fragment {
 
                     if (title.equals(mTitle)) {
 
-                        mFloatingActionButton.setImageResource(R.drawable.starfull);
+                        mFloatingActionButton.setImageResource(R.drawable.starempty);
 
                         sqLiteDatabase = dbHandler.getWritableDatabase();
 
@@ -92,7 +95,7 @@ public class DetailActivityFragment extends Fragment {
                                 Toast.LENGTH_LONG).show();
                     } else if (!(title.equals(mTitle))) {
 
-                        mFloatingActionButton.setImageResource(R.drawable.starempty);
+                        mFloatingActionButton.setImageResource(R.drawable.starfull);
 
                         sqLiteDatabase = dbHandler.getWritableDatabase();
 
@@ -125,7 +128,7 @@ public class DetailActivityFragment extends Fragment {
 
                     sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
-                    mFloatingActionButton.setImageResource(R.drawable.starempty);
+                    mFloatingActionButton.setImageResource(R.drawable.starfull);
 
                     Toast.makeText(getActivity(),
                             mTitle + " " +
@@ -136,5 +139,35 @@ public class DetailActivityFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void setDefaultFabImageResource(){
+
+        DbHandler dbHandler = new DbHandler(getContext());
+
+        SQLiteDatabase db;
+
+        db = dbHandler.getReadableDatabase();
+
+        try{
+
+        Cursor c = db.rawQuery("SELECT * FROM favorites WHERE title = \"" + mTitle + "\"", null);
+        c.moveToFirst();
+        int titleIndex = c.getColumnIndex("title");
+        String title = c.getString(titleIndex);
+
+        if (title.equals(mTitle)) {
+
+            mFloatingActionButton.setImageResource(R.drawable.starfull);
+        } else {
+
+            mFloatingActionButton.setImageResource(R.drawable.starempty);
+        }
+    }
+    catch(CursorIndexOutOfBoundsException e){
+        e.printStackTrace();
+
+        mFloatingActionButton.setImageResource(R.drawable.starempty);
+    }
     }
 }

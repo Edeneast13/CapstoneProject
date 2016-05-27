@@ -1,5 +1,6 @@
 package com.brianroper.tattome.ui;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,7 @@ public class GetStartedActivity extends AppCompatActivity {
     final int RC_SIGN_IN = 9001;
     private SignInButton mGoogleSignIn;
     private GoogleApiClient.OnConnectionFailedListener mOnConnectionFailedListener;
+    private Bundle mBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,9 @@ public class GetStartedActivity extends AppCompatActivity {
         mGoogleSignIn = (SignInButton)findViewById(R.id.google_login_button);
 
         mAuth = FirebaseAuth.getInstance();
+
+        mBundle = ActivityOptions.makeSceneTransitionAnimation(this)
+                .toBundle();
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -164,7 +169,7 @@ public class GetStartedActivity extends AppCompatActivity {
 
                                 Intent intent = new Intent(getApplicationContext(), ListActivity.class);
                                 intent.putExtra("category", "featured");
-                                startActivity(intent);
+                                startActivity(intent, mBundle);
                             }
                         }
                     });
@@ -200,7 +205,7 @@ public class GetStartedActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(getApplicationContext(), ListActivity.class);
                             intent.putExtra("category", "featured");
-                            startActivity(intent);
+                            startActivity(intent, mBundle);
                         }
                     }
                 });

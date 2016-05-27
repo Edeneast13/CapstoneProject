@@ -26,8 +26,6 @@ import java.util.regex.Pattern;
 public class ListActivityFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private StaggeredGridLayoutManager mLayoutManager;
-    private TattooAdapter mAdapter;
     final String BASE_TATTOO_URL = "www.tattooideas247.com";
     final String URL_SCHEME = "http";
     private ArrayList<String> mUrlList = new ArrayList<String>();

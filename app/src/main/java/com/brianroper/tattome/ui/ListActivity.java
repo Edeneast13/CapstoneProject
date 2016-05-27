@@ -1,5 +1,6 @@
 package com.brianroper.tattome.ui;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ public class ListActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private NavigationView mNavigationView;
     private Toolbar mToolbar;
+    private Bundle mBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,9 @@ public class ListActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView)findViewById(R.id.nav_view);
+
+        mBundle = ActivityOptions.makeSceneTransitionAnimation(this)
+                .toBundle();
 
         setUpDrawerContent(mNavigationView);
 
@@ -182,7 +187,7 @@ public class ListActivity extends AppCompatActivity {
                                         i.putExtra(category, array[dialog.getSelectedIndex()]);
                                         break;
                                 }
-                                startActivity(i);
+                                startActivity(i, mBundle);
                             }
                         })
                         .show();
@@ -191,9 +196,8 @@ public class ListActivity extends AppCompatActivity {
 
             case R.id.nav_third_item:
 
-                //start favorites activity here
-                Toast.makeText(getApplicationContext(), "Not yet implemented, be patient please",
-                        Toast.LENGTH_LONG).show();
+                Intent favoritesIntent = new Intent(getApplicationContext(),FavoritesActivity.class);
+                startActivity(favoritesIntent, mBundle);
 
                 break;
 

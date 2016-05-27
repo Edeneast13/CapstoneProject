@@ -28,8 +28,4 @@ public class FavoritesActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-
-    }
 }
