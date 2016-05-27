@@ -51,7 +51,7 @@ public class TattooAdapter extends RecyclerView.Adapter<TattooAdapter.ViewHolder
                 String url = mUrlList.get(position);
                 intent.putExtra("url", url);
                 Log.i("StringUrl: ", url);
-                String title = mUrlList.get(position);
+                String title = mTitleList.get(position);
                 intent.putExtra("title", title);
                 Log.i("StringTitle: ", title);
                 mContext.startActivity(intent);

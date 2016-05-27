@@ -118,12 +118,12 @@ public class ListActivityFragment extends Fragment {
             Log.i("URL: ", mUrlList.get(i));
         }
 
-        Pattern titlePattern = Pattern.compile("title=\"(.*?)\"");
-        tattooMatcher = titlePattern.matcher(splitData[1]);
+        Pattern titlePattern = Pattern.compile("alt=\"(.*?)\"");
+        Matcher titleMatcher = titlePattern.matcher(splitData[1]);
 
-        while(tattooMatcher.find()){
+        while(titleMatcher.find()){
 
-            mTitleList.add(tattooMatcher.group(1));
+            mTitleList.add(titleMatcher.group(1));
         }
 
         for (int i = 0; i < mTitleList.size(); i++) {

@@ -39,9 +39,10 @@ public class DetailActivityFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_detail, container, false);
         mFullImageView = (ImageView)root.findViewById(R.id.full_tattoo_imageview);
-        mFloatingActionButton = (FloatingActionButton)root.findViewById(R.id.fav_fab);
+        mFloatingActionButton = (FloatingActionButton) root.findViewById(R.id.fav_fab);
 
         populateImageWithIntent();
+        setFloatingActionButton();
 
         return root;
     }
@@ -87,7 +88,7 @@ public class DetailActivityFragment extends Fragment {
 
                         Toast.makeText(getActivity(),
                                 mTitle + " " +
-                                getString(R.string.favorites_remove_toast),
+                                        getString(R.string.favorites_remove_toast),
                                 Toast.LENGTH_LONG).show();
                     } else if (!(title.equals(mTitle))) {
 
@@ -107,10 +108,10 @@ public class DetailActivityFragment extends Fragment {
                         sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
                         Toast.makeText(getActivity(),
                                 mTitle + " " +
-                                getResources().getString(R.string.favorites_saved),
+                                        getResources().getString(R.string.favorites_saved),
                                 Toast.LENGTH_LONG).show();
                     }
-                }catch (CursorIndexOutOfBoundsException e) {
+                } catch (CursorIndexOutOfBoundsException e) {
                     sqLiteDatabase = dbHandler.getWritableDatabase();
 
                     ImageView mPosterRef = mFullImageView;
@@ -128,7 +129,7 @@ public class DetailActivityFragment extends Fragment {
 
                     Toast.makeText(getActivity(),
                             mTitle + " " +
-                            getResources().getString(R.string.favorites_saved),
+                                    getResources().getString(R.string.favorites_saved),
                             Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     e.printStackTrace();
