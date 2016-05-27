@@ -10,11 +10,11 @@
 
     <!-- Create Account activity strings -->
     <string name="create_button_text">Sign Up!</string>
-    <string name="creation_success_toast">Success! Welcome to Tattoo Me</string>
+    <string name="creation_success_toast">Success! Welcome to Tatt That</string>
     <string name="login_welcome">Welcome Back!</string>
     <string name="create_account_textview">No account yet? Create one, or</string>
 
-    <string name="title">Tattoo Me</string>
+    <string name="title">Tatt That</string>
     <string name="title_activity_create_account">CreateAccountActivity</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_detail">DetailActivity</string>
@@ -30,4 +30,8 @@
     <string name="cat_featured">featured</string>
     <string name="cat_animal">animal-tattoos</string>
     <string name="box_choice">Choose</string>
+    <string name="title_activity_favorites">FavoritesActivity</string>
+
+    <string name="favorites_remove_toast">has been removed from favorites</string>
+    <string name="favorites_saved">has been saved to favorites</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.brianroper.tattome;
+package com.brianroper.tattome.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -7,15 +7,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-public class DetailActivity extends AppCompatActivity {
+import com.brianroper.tattome.R;
+
+public class FavoritesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_favorites);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -25,9 +26,10 @@ public class DetailActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
 }

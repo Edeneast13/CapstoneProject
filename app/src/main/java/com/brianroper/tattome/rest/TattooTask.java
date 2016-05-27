@@ -1,4 +1,4 @@
-package com.brianroper.tattome;
+package com.brianroper.tattome.rest;
 
 import android.os.AsyncTask;
 import android.util.Log;

@@ -1,7 +1,8 @@
-package com.brianroper.tattome;
+package com.brianroper.tattome.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,7 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.brianroper.tattome.R;
+import com.brianroper.tattome.ui.DetailActivity;
 import com.squareup.picasso.Picasso;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -21,11 +26,13 @@ public class TattooAdapter extends RecyclerView.Adapter<TattooAdapter.ViewHolder
     private LayoutInflater mLayoutInflater;
     private Context mContext;
     private ArrayList<String> mUrlList = new ArrayList<String>();
+    private ArrayList<String> mTitleList = new ArrayList<String>();
 
-    public TattooAdapter(Context context, ArrayList<String> list) {
+    public TattooAdapter(Context context, ArrayList<String> urlList, ArrayList<String> titleList) {
 
         mContext = context;
-        mUrlList = list;
+        mUrlList = urlList;
+        mTitleList = titleList;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
@@ -44,6 +51,9 @@ public class TattooAdapter extends RecyclerView.Adapter<TattooAdapter.ViewHolder
                 String url = mUrlList.get(position);
                 intent.putExtra("url", url);
                 Log.i("StringUrl: ", url);
+                String title = mUrlList.get(position);
+                intent.putExtra("title", title);
+                Log.i("StringTitle: ", title);
                 mContext.startActivity(intent);
 
             }

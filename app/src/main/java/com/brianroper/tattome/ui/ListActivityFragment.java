@@ -1,6 +1,5 @@
-package com.brianroper.tattome;
+package com.brianroper.tattome.ui;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -11,15 +10,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.ImageView;
+
+import com.brianroper.tattome.R;
+import com.brianroper.tattome.util.TattooAdapter;
+import com.brianroper.tattome.rest.TattooTask;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import butterknife.BindView;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -32,6 +31,7 @@ public class ListActivityFragment extends Fragment {
     final String BASE_TATTOO_URL = "www.tattooideas247.com";
     final String URL_SCHEME = "http";
     private ArrayList<String> mUrlList = new ArrayList<String>();
+    private ArrayList<String> mTitleList = new ArrayList<String>();
 
     public ListActivityFragment() {
     }
@@ -44,7 +44,7 @@ public class ListActivityFragment extends Fragment {
 
         splitPage();
 
-        TattooAdapter adapter = new TattooAdapter(getActivity(), mUrlList);
+        TattooAdapter adapter = new TattooAdapter(getActivity(), mUrlList, mTitleList);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -116,6 +116,18 @@ public class ListActivityFragment extends Fragment {
         for (int i = 0; i < mUrlList.size(); i++) {
 
             Log.i("URL: ", mUrlList.get(i));
+        }
+
+        Pattern titlePattern = Pattern.compile("title=\"(.*?)\"");
+        tattooMatcher = titlePattern.matcher(splitData[1]);
+
+        while(tattooMatcher.find()){
+
+            mTitleList.add(tattooMatcher.group(1));
+        }
+
+        for (int i = 0; i < mTitleList.size(); i++) {
+            Log.i("TITLE: ", mTitleList.get(i));
         }
     }
 }

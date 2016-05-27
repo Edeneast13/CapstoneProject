@@ -16,7 +16,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.brianroper.tattome.ListActivity">
+    tools:context=".ui.ListActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <fragment android:id="@+id/fragment"
-              android:name="com.brianroper.tattome.ListActivityFragment"
+              android:name="com.brianroper.tattome.ui.ListActivityFragment"
               xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
