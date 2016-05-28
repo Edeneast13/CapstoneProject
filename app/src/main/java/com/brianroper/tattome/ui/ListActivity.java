@@ -3,6 +3,8 @@ package com.brianroper.tattome.ui;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -10,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.InflateException;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -18,7 +21,10 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.brianroper.tattome.R;
+import com.brianroper.tattome.database.DbHandler;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.io.File;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -196,8 +202,16 @@ public class ListActivity extends AppCompatActivity {
 
             case R.id.nav_third_item:
 
-                Intent favoritesIntent = new Intent(getApplicationContext(),FavoritesActivity.class);
-                startActivity(favoritesIntent, mBundle);
+                if(activeDb() == true){
+
+                    Intent favoritesIntent = new Intent(getApplicationContext(),FavoritesActivity.class);
+                    startActivity(favoritesIntent, mBundle);
+                }
+                else{
+
+                    Toast.makeText(getApplicationContext(), R.string.favorites_null,
+                            Toast.LENGTH_LONG).show();
+                }
 
                 break;
 
@@ -227,5 +241,23 @@ public class ListActivity extends AppCompatActivity {
                     R.string.drawer_open,
                     R.string.drawer_closed);
 
+    }
+
+    public boolean activeDb(){
+
+        boolean doesExists;
+
+        File database = getApplicationContext().getDatabasePath("favorites.db");
+
+        if(!database.exists()){
+
+            doesExists = false;
+        }
+        else{
+
+            doesExists = true;
+        }
+
+        return doesExists;
     }
 }

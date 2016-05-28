@@ -1,9 +1,11 @@
 package com.brianroper.tattome.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Base64;
@@ -114,15 +116,19 @@ public class FavoritesActivityFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 mTitle = mTitleList.get(position);
-
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                SharedPreferences sharedPreferences = PreferenceManager
+                        .getDefaultSharedPreferences(getActivity());
 
                 Bitmap bitmap = mBitmapsFromDb.get(position);
 
                 byte[] bytes = convertBitmapToByteArrayAsync(bitmap);
 
+                String stringBytes = Base64.encodeToString(bytes, Base64.DEFAULT);
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+
                 intent.putExtra("title", mTitle);
-                intent.putExtra("bytes", bytes);
+                sharedPreferences.edit().putString("bytes", stringBytes);
 
                 startActivity(intent);
             }

@@ -2,13 +2,16 @@ package com.brianroper.tattome.ui;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +56,8 @@ public class DetailActivityFragment extends Fragment {
         String url = "";
         byte[] bytes;
         Bitmap image;
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
 
         Intent intent = getActivity().getIntent();
 
@@ -63,9 +68,11 @@ public class DetailActivityFragment extends Fragment {
 
         String title = intent.getStringExtra("title");
 
-        if(intent.getByteArrayExtra("bytes") != null){
+        if(sharedPreferences.getString("bytes", null) != null){
 
-            bytes = intent.getByteArrayExtra("bytes");
+            String stringBytes = sharedPreferences.getString("bytes", null);
+            bytes = Base64.decode(stringBytes, Base64.DEFAULT);
+
             image = DbBitmapUtil.convertByteArrayToBitmap(bytes);
         }
 
