@@ -50,15 +50,33 @@ public class DetailActivityFragment extends Fragment {
 
     public void populateImageWithIntent(){
 
+        String url = "";
+        byte[] bytes;
+        Bitmap image;
+
         Intent intent = getActivity().getIntent();
-        String url = intent.getStringExtra("url");
+
+        if(intent.getStringExtra("url") != null){
+
+            url = intent.getStringExtra("url");
+        }
+
         String title = intent.getStringExtra("title");
+
+        if(intent.getByteArrayExtra("bytes") != null){
+
+            bytes = intent.getByteArrayExtra("bytes");
+            image = DbBitmapUtil.convertByteArrayToBitmap(bytes);
+        }
 
         mTitle = title;
 
-        Picasso.with(getActivity()).load(url)
-                .placeholder(R.drawable.tattooplaceholder)
-                .into(mFullImageView);
+        if(url != null){
+
+            Picasso.with(getActivity()).load(url)
+                    .placeholder(R.drawable.tattooplaceholder)
+                    .into(mFullImageView);
+        }
     }
 
     public void setFloatingActionButton(){
