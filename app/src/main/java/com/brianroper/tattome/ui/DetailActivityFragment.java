@@ -55,7 +55,6 @@ public class DetailActivityFragment extends Fragment {
 
         String url = "";
         byte[] bytes;
-        Bitmap image;
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(getActivity());
 
@@ -64,26 +63,35 @@ public class DetailActivityFragment extends Fragment {
         if(intent.getStringExtra("url") != null){
 
             url = intent.getStringExtra("url");
-        }
-
-        String title = intent.getStringExtra("title");
-
-        if(sharedPreferences.getString("bytes", null) != null){
-
-            String stringBytes = sharedPreferences.getString("bytes", null);
-            bytes = Base64.decode(stringBytes, Base64.DEFAULT);
-
-            image = DbBitmapUtil.convertByteArrayToBitmap(bytes);
-        }
-
-        mTitle = title;
-
-        if(url != null){
 
             Picasso.with(getActivity()).load(url)
                     .placeholder(R.drawable.tattooplaceholder)
                     .into(mFullImageView);
         }
+
+        String title = intent.getStringExtra("title");
+        String bytesArray = sharedPreferences.getString("bytes", null);
+
+        if(bytesArray != null){
+
+            Log.i("Shared Pref: ", "true");
+
+            String stringBytes = sharedPreferences.getString("bytes", null);
+            bytes = Base64.decode(stringBytes, Base64.DEFAULT);
+
+            Bitmap image = DbBitmapUtil.convertByteArrayToBitmap(bytes);
+
+            if(image != null){
+
+                mFullImageView.setImageBitmap(image);
+                Log.i("Bitmap: ", "true");
+            }
+            else{
+                Log.i("Bitmap: ", "false");
+            }
+        }
+
+        mTitle = title;
     }
 
     public void setFloatingActionButton(){

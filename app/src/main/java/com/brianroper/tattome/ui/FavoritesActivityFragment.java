@@ -128,7 +128,7 @@ public class FavoritesActivityFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
 
                 intent.putExtra("title", mTitle);
-                sharedPreferences.edit().putString("bytes", stringBytes);
+                sharedPreferences.edit().putString("bytes", stringBytes).commit();
 
                 startActivity(intent);
             }
