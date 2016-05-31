@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -22,12 +23,14 @@ import android.widget.Toast;
 
 import com.brianroper.tattome.R;
 import com.brianroper.tattome.database.DbHandler;
-import com.brianroper.tattome.database.Favorites;
 import com.brianroper.tattome.util.DbBitmapUtil;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -38,10 +41,12 @@ public class DetailActivityFragment extends Fragment {
     private ImageView mFullImageView;
     private FloatingActionButton mFloatingActionButton;
     private String mTitle;
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
     private String mUrl= "";
     private TextView mTitleTextView;
+    private String[] userRoot;
+    private final String FIREBASE_BUCKET = "gs://tattoo-b7ce6.appspot.com";
+    private final String FIREBASE_IMAGE_STORE = "images";
+
 
     public DetailActivityFragment() {
     }
@@ -56,9 +61,7 @@ public class DetailActivityFragment extends Fragment {
         mTitleTextView = (TextView)root.findViewById(R.id.detail_textview);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String[] tokens = user.getEmail().split("@");
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference(tokens[0]);
+        userRoot = user.getEmail().split("@");
 
         populateImageWithIntent();
         setFloatingActionButton();
@@ -154,9 +157,7 @@ public class DetailActivityFragment extends Fragment {
                         values.put("title", mTitle);
                         values.put("image", posterByteArray);
 
-                        Favorites favorites = new Favorites();
-                        favorites.setTattooUrl(mUrl);
-                        mDatabaseReference.setValue(favorites);
+                        storeFavoriteInFirebaseStorage(userRoot[0], posterByteArray);
 
                         sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
                         Toast.makeText(getActivity(),
@@ -174,6 +175,8 @@ public class DetailActivityFragment extends Fragment {
                     ContentValues values = new ContentValues();
                     values.put("title", mTitle);
                     values.put("image", posterByteArray);
+
+                    storeFavoriteInFirebaseStorage(userRoot[0], posterByteArray);
 
                     sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
@@ -218,5 +221,35 @@ public class DetailActivityFragment extends Fragment {
 
         mFloatingActionButton.setImageResource(R.drawable.starempty);
     }
+    }
+
+    public void storeFavoriteInFirebaseStorage(String user, byte[] image){
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        StorageReference storageReference = storage.getReferenceFromUrl(FIREBASE_BUCKET);
+
+        StorageReference userReference = storageReference.child(user);
+
+        StorageReference imageReference = userReference.child(FIREBASE_IMAGE_STORE);
+
+        UploadTask uploadTask = imageReference.putBytes(image);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception e) {
+
+                //TODO: Implement snackbar to notify user of failure
+                //TODO: Allow for the user to retry
+
+                Log.i("Upload: ", "failed");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                Uri downloadUri = taskSnapshot.getDownloadUrl();
+                Log.i("Upload: ", "success");
+            }
+        });
     }
 }

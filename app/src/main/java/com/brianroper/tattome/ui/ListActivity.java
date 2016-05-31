@@ -259,7 +259,6 @@ public class ListActivity extends AppCompatActivity {
                     mToolbar,
                     R.string.drawer_open,
                     R.string.drawer_closed);
-
     }
 
     public boolean activeDb(){
