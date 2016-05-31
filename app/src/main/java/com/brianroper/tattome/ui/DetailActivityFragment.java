@@ -17,11 +17,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.brianroper.tattome.R;
 import com.brianroper.tattome.database.DbHandler;
+import com.brianroper.tattome.database.Favorites;
 import com.brianroper.tattome.util.DbBitmapUtil;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -32,6 +38,10 @@ public class DetailActivityFragment extends Fragment {
     private ImageView mFullImageView;
     private FloatingActionButton mFloatingActionButton;
     private String mTitle;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mDatabaseReference;
+    private String mUrl= "";
+    private TextView mTitleTextView;
 
     public DetailActivityFragment() {
     }
@@ -43,6 +53,12 @@ public class DetailActivityFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_detail, container, false);
         mFullImageView = (ImageView)root.findViewById(R.id.full_tattoo_imageview);
         mFloatingActionButton = (FloatingActionButton) root.findViewById(R.id.fav_fab);
+        mTitleTextView = (TextView)root.findViewById(R.id.detail_textview);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String[] tokens = user.getEmail().split("@");
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference(tokens[0]);
 
         populateImageWithIntent();
         setFloatingActionButton();
@@ -53,7 +69,6 @@ public class DetailActivityFragment extends Fragment {
 
     public void populateImageWithIntent(){
 
-        String url = "";
         byte[] bytes;
         SharedPreferences sharedPreferences = PreferenceManager
                 .getDefaultSharedPreferences(getActivity());
@@ -62,9 +77,9 @@ public class DetailActivityFragment extends Fragment {
 
         if(intent.getStringExtra("url") != null){
 
-            url = intent.getStringExtra("url");
+            mUrl = intent.getStringExtra("url");
 
-            Picasso.with(getActivity()).load(url)
+            Picasso.with(getActivity()).load(mUrl)
                     .placeholder(R.drawable.tattooplaceholder)
                     .into(mFullImageView);
         }
@@ -84,14 +99,15 @@ public class DetailActivityFragment extends Fragment {
             if(image != null){
 
                 mFullImageView.setImageBitmap(image);
-                Log.i("Bitmap: ", "true");
             }
             else{
-                Log.i("Bitmap: ", "false");
+
             }
         }
 
         mTitle = title;
+        mTitleTextView.setText(mTitle);
+
     }
 
     public void setFloatingActionButton(){
@@ -99,8 +115,6 @@ public class DetailActivityFragment extends Fragment {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Log.i("FAB", "clicked");
 
                 DbHandler dbHandler = new DbHandler(getContext());
                 SQLiteDatabase sqLiteDatabase;
@@ -139,7 +153,10 @@ public class DetailActivityFragment extends Fragment {
                         ContentValues values = new ContentValues();
                         values.put("title", mTitle);
                         values.put("image", posterByteArray);
-                        Log.i("POSTER BYTE ARRAY: ", posterByteArray.toString());
+
+                        Favorites favorites = new Favorites();
+                        favorites.setTattooUrl(mUrl);
+                        mDatabaseReference.setValue(favorites);
 
                         sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
                         Toast.makeText(getActivity(),
@@ -157,7 +174,6 @@ public class DetailActivityFragment extends Fragment {
                     ContentValues values = new ContentValues();
                     values.put("title", mTitle);
                     values.put("image", posterByteArray);
-                    Log.i("POSTER BYTE ARRAY: ", posterByteArray.toString());
 
                     sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
 

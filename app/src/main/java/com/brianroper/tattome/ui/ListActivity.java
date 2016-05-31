@@ -142,13 +142,17 @@ public class ListActivity extends AppCompatActivity {
                                         "animal-tattoos",
                                         "bug-tattoos",
                                         "cartoon-tattoos",
+                                        "cat-tattoos",
                                         "cute-tattoos-2",
                                         "geometric-tattoos-2",
                                         "henna",
                                         "mandala-tattoos",
+                                        "minimalistic",
                                         "plant-tattoos",
                                         "religious-tattoos",
-                                        "watercolor-tattoos"
+                                        "watercolor-tattoos",
+                                        "words-tattoos",
+                                        "wrist-tattoos"
                                 };
 
                                 switch (dialog.getSelectedIndex()){
@@ -192,6 +196,21 @@ public class ListActivity extends AppCompatActivity {
                                     case 9:
                                         i.putExtra(category, array[dialog.getSelectedIndex()]);
                                         break;
+
+                                    case 10:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 11:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 12:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 13:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
                                 }
                                 startActivity(i, mBundle);
                             }

@@ -45,7 +45,11 @@ public class ListActivityFragment extends Fragment {
         TattooAdapter adapter = new TattooAdapter(getActivity(), mUrlList, mTitleList);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        StaggeredGridLayoutManager sglm =
+                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+
+        mRecyclerView.setLayoutManager(sglm);
 
         return root;
     }
@@ -65,11 +69,9 @@ public class ListActivityFragment extends Fragment {
 
             if(searchParam.equals("featured")){
 
-                Log.i("Intent Extra: ", searchParam);
             }
             else{
 
-                Log.i("Intent Extra: ", searchParam);
                 builder.appendPath(searchParam);
             }
         }
@@ -93,7 +95,6 @@ public class ListActivityFragment extends Fragment {
             return result;
 
         }
-        Log.i("Url: ", result);
         return null;
     }
 
