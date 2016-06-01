@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import com.brianroper.tattome.R;
 import com.brianroper.tattome.database.DbHandler;
+import com.brianroper.tattome.util.BitmapConvertTask;
+import com.brianroper.tattome.util.ByteArrayConvertTask;
 import com.brianroper.tattome.util.DbBitmapUtil;
 import com.brianroper.tattome.util.NetworkTest;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,6 +36,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -44,10 +48,6 @@ public class DetailActivityFragment extends Fragment {
     private String mTitle;
     private String mUrl= "";
     private TextView mTitleTextView;
-    private String[] userRoot;
-    private final String FIREBASE_BUCKET = "gs://tattoo-b7ce6.appspot.com";
-    private final String FIREBASE_IMAGE_STORE = "images";
-
 
     public DetailActivityFragment() {
     }
@@ -62,9 +62,6 @@ public class DetailActivityFragment extends Fragment {
         mTitleTextView = (TextView)root.findViewById(R.id.detail_textview);
 
         if(NetworkTest.activeNetworkCheck(getActivity()) == true) {
-
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            userRoot = user.getEmail().split("@");
 
             populateImageWithIntent();
             setFloatingActionButton();
@@ -94,18 +91,12 @@ public class DetailActivityFragment extends Fragment {
                     .placeholder(R.drawable.tattooplaceholder)
                     .into(mFullImageView);
         }
-
-        String title = intent.getStringExtra("title");
-        String bytesArray = sharedPreferences.getString("bytes", null);
-
-        if(bytesArray != null){
-
-            Log.i("Shared Pref: ", "true");
+        else{
 
             String stringBytes = sharedPreferences.getString("bytes", null);
             bytes = Base64.decode(stringBytes, Base64.DEFAULT);
 
-            Bitmap image = DbBitmapUtil.convertByteArrayToBitmap(bytes);
+            Bitmap image = convertByteArrayToBitmapAsync(bytes);
 
             if(image != null){
 
@@ -114,6 +105,14 @@ public class DetailActivityFragment extends Fragment {
             else{
 
             }
+        }
+
+        String title = intent.getStringExtra("title");
+        String bytesArray = sharedPreferences.getString("bytes", null);
+
+        if(title.contains("&amp;")){
+
+            title = title.replace("&amp;", "and");
         }
 
         mTitle = title;
@@ -163,13 +162,11 @@ public class DetailActivityFragment extends Fragment {
 
                         ImageView mPosterRef = mFullImageView;
                         Bitmap posterBitmap = DbBitmapUtil.convertImageViewToBitmap(mPosterRef);
-                        byte[] posterByteArray = DbBitmapUtil.convertBitmapToByteArray(posterBitmap);
+                        byte[] posterByteArray = convertBitmapToByteArrayAsync(posterBitmap);
 
                         ContentValues values = new ContentValues();
                         values.put("title", mTitle);
                         values.put("image", posterByteArray);
-
-                        storeFavoriteInFirebaseStorage(userRoot[0], posterByteArray);
 
                         sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
@@ -185,13 +182,11 @@ public class DetailActivityFragment extends Fragment {
 
                     ImageView mPosterRef = mFullImageView;
                     Bitmap posterBitmap = DbBitmapUtil.convertImageViewToBitmap(mPosterRef);
-                    byte[] posterByteArray = DbBitmapUtil.convertBitmapToByteArray(posterBitmap);
+                    byte[] posterByteArray = convertBitmapToByteArrayAsync(posterBitmap);
 
                     ContentValues values = new ContentValues();
                     values.put("title", mTitle);
                     values.put("image", posterByteArray);
-
-                    storeFavoriteInFirebaseStorage(userRoot[0], posterByteArray);
 
                     sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
@@ -247,33 +242,41 @@ public class DetailActivityFragment extends Fragment {
     }
     }
 
-    public void storeFavoriteInFirebaseStorage(String user, byte[] image){
+    public byte[] convertBitmapToByteArrayAsync(Bitmap bitmap){
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
+        BitmapConvertTask task = new BitmapConvertTask();
 
-        StorageReference storageReference = storage.getReferenceFromUrl(FIREBASE_BUCKET);
+        byte[] bytes = new byte[0];
 
-        StorageReference userReference = storageReference.child(user);
+        try {
+            bytes = task.execute(bitmap).get();
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
-        StorageReference imageReference = userReference.child(FIREBASE_IMAGE_STORE);
+        return bytes;
+    }
 
-        UploadTask uploadTask = imageReference.putBytes(image);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(Exception e) {
+    public Bitmap convertByteArrayToBitmapAsync(byte[] bytes){
 
-                //TODO: Implement snackbar to notify user of failure
-                //TODO: Allow for the user to retry
+        ByteArrayConvertTask task = new ByteArrayConvertTask();
 
-                Log.i("Upload: ", "failed");
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+        Bitmap bitmap = null;
 
-                Uri downloadUri = taskSnapshot.getDownloadUrl();
-                Log.i("Upload: ", "success");
-            }
-        });
+        try{
+            bitmap = task.execute(bytes).get();
+        }
+        catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        catch (ExecutionException e){
+            e.printStackTrace();
+        }
+
+        return bitmap;
     }
 }
