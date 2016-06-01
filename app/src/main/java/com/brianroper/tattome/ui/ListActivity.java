@@ -246,9 +246,8 @@ public class ListActivity extends AppCompatActivity {
 
             case R.id.nav_fourth_item:
 
-                //start settings activity here
-                Toast.makeText(getApplicationContext(), "Not yet implemented, be patient please",
-                        Toast.LENGTH_LONG).show();
+                Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(settingsIntent, mBundle);
 
                 break;
 

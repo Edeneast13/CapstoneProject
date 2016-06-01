@@ -39,4 +39,8 @@
     <string name="favorites_null">Oops, it looks like you don\'t have any favorites saved yet</string>
 
     <string name="no_network">There is currently no active network connection. This app requires a network connection to retrieve tattoos.</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <string name="firebase_check_title">Sync to cloud</string>
+    <string name="firebase_check_summary">save your favorites to the cloud so that you never loss them</string>
 </resources>
