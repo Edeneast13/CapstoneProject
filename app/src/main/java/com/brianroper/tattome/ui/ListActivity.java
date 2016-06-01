@@ -22,6 +22,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.brianroper.tattome.R;
 import com.brianroper.tattome.database.DbHandler;
+import com.brianroper.tattome.util.NetworkTest;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
@@ -120,7 +121,9 @@ public class ListActivity extends AppCompatActivity {
 
             case R.id.nav_second_item:
 
-                new MaterialDialog.Builder(this)
+                if(NetworkTest.activeNetworkCheck(getApplicationContext()) == true){
+
+                    new MaterialDialog.Builder(this)
                         .title(R.string.categories_title)
                         .items(R.array.category_items)
                         .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
@@ -154,6 +157,7 @@ public class ListActivity extends AppCompatActivity {
                                         "words-tattoos",
                                         "wrist-tattoos"
                                 };
+
 
                                 switch (dialog.getSelectedIndex()){
 
@@ -218,6 +222,12 @@ public class ListActivity extends AppCompatActivity {
                         .show();
 
                 break;
+
+                }else{
+
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_network),
+                            Toast.LENGTH_LONG).show();
+                }
 
             case R.id.nav_third_item:
 

@@ -37,4 +37,6 @@
     <string name="favorites_remove_toast">has been removed from favorites</string>
     <string name="favorites_saved">has been saved to favorites</string>
     <string name="favorites_null">Oops, it looks like you don\'t have any favorites saved yet</string>
+
+    <string name="no_network">There is currently no active network connection. This app requires a network connection to retrieve tattoos.</string>
 </resources>

@@ -66,7 +66,6 @@ public class TattooAdapter extends RecyclerView.Adapter<TattooAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
 
        holder.setImageView(mContext, mUrlList.get(position));
-        Log.i("POSITION: ", mUrlList.get(position));
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.brianroper.tattome.R;
 import com.brianroper.tattome.User;
+import com.brianroper.tattome.util.NetworkTest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -69,7 +70,15 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     public void createAccount(View v){
 
-        setUserCredentials();
+        if(NetworkTest.activeNetworkCheck(getApplicationContext())==true){
+
+            setUserCredentials();
+        }
+        else{
+
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_network),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     public void setUserCredentials(){

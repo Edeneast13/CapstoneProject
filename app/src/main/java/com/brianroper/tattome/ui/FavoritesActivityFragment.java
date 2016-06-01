@@ -1,5 +1,6 @@
 package com.brianroper.tattome.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -35,7 +36,6 @@ public class FavoritesActivityFragment extends Fragment {
     private ArrayList<Bitmap> mBitmapsFromDb = new ArrayList<Bitmap>();
     private ArrayList<String> mTitleList = new ArrayList<String>();
     private String mTitle;
-    private String mImageBytes;
 
     public FavoritesActivityFragment() {
     }
@@ -63,28 +63,33 @@ public class FavoritesActivityFragment extends Fragment {
 
         try {
 
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM favorites", null);
+            Cursor imageCursor = sqLiteDatabase.rawQuery("SELECT * FROM favorites", null);
 
-            int titleIndex = cursor.getColumnIndex("title");
-            cursor.moveToFirst();
+            int imageIndex = imageCursor.getColumnIndex("image");
+            imageCursor.moveToFirst();
 
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            for (imageCursor.moveToFirst(); !imageCursor.isAfterLast(); imageCursor.moveToNext()) {
 
-                title = cursor.getString(titleIndex);
-                mTitleList.add(title);
-            }
-
-            int imageIndex = cursor.getColumnIndex("image");
-            cursor.moveToFirst();
-
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-
-                 imageBitmap = convertByteArrayToBitmapAsync(cursor.getBlob(imageIndex));
+                 imageBitmap = convertByteArrayToBitmapAsync(imageCursor.getBlob(imageIndex));
 
                  mBitmapsFromDb.add(imageBitmap);
             }
 
-            cursor.close();
+            imageCursor.close();
+
+            Cursor titleCursor = sqLiteDatabase.rawQuery("SELECT * FROM favorites", null);
+
+            int titleIndex = titleCursor.getColumnIndex("title");
+            titleCursor.moveToFirst();
+
+            for (titleCursor.moveToFirst(); !titleCursor.isAfterLast(); titleCursor.moveToNext()) {
+
+                title = titleCursor.getString(titleIndex);
+                mTitleList.add(title);
+            }
+
+            titleCursor.close();
+            sqLiteDatabase.close();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -143,9 +148,11 @@ public class FavoritesActivityFragment extends Fragment {
 
         try {
             bytes = task.execute(bitmap).get();
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (ExecutionException e) {
+        }
+        catch (ExecutionException e) {
             e.printStackTrace();
         }
 

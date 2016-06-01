@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.brianroper.tattome.R;
 import com.brianroper.tattome.database.DbHandler;
 import com.brianroper.tattome.util.DbBitmapUtil;
+import com.brianroper.tattome.util.NetworkTest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,12 +61,19 @@ public class DetailActivityFragment extends Fragment {
         mFloatingActionButton = (FloatingActionButton) root.findViewById(R.id.fav_fab);
         mTitleTextView = (TextView)root.findViewById(R.id.detail_textview);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        userRoot = user.getEmail().split("@");
+        if(NetworkTest.activeNetworkCheck(getActivity()) == true) {
 
-        populateImageWithIntent();
-        setFloatingActionButton();
-        setDefaultFabImageResource();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            userRoot = user.getEmail().split("@");
+
+            populateImageWithIntent();
+            setFloatingActionButton();
+            setDefaultFabImageResource();
+        }else{
+
+            Toast.makeText(getActivity(), getResources().getString(R.string.no_network),
+                    Toast.LENGTH_LONG).show();
+        }
 
         return root;
     }
@@ -131,6 +139,8 @@ public class DetailActivityFragment extends Fragment {
                     int titleIndex = c.getColumnIndex("title");
                     String title = c.getString(titleIndex);
 
+                    c.close();
+
                     if (title.equals(mTitle)) {
 
                         mFloatingActionButton.setImageResource(R.drawable.starempty);
@@ -138,6 +148,8 @@ public class DetailActivityFragment extends Fragment {
                         sqLiteDatabase = dbHandler.getWritableDatabase();
 
                         sqLiteDatabase.delete("favorites", "title == " + "\"" + mTitle + "\"", null);
+
+                        sqLiteDatabase.close();
 
                         Toast.makeText(getActivity(),
                                 mTitle + " " +
@@ -160,6 +172,9 @@ public class DetailActivityFragment extends Fragment {
                         storeFavoriteInFirebaseStorage(userRoot[0], posterByteArray);
 
                         sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
+                        sqLiteDatabase.close();
+
                         Toast.makeText(getActivity(),
                                 mTitle + " " +
                                         getResources().getString(R.string.favorites_saved),
@@ -179,6 +194,8 @@ public class DetailActivityFragment extends Fragment {
                     storeFavoriteInFirebaseStorage(userRoot[0], posterByteArray);
 
                     sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
+                    sqLiteDatabase.close();
 
                     mFloatingActionButton.setImageResource(R.drawable.starfull);
 
@@ -204,9 +221,16 @@ public class DetailActivityFragment extends Fragment {
         try{
 
         Cursor c = db.rawQuery("SELECT * FROM favorites WHERE title = \"" + mTitle + "\"", null);
-        c.moveToFirst();
-        int titleIndex = c.getColumnIndex("title");
-        String title = c.getString(titleIndex);
+        String title ="";
+
+        if(c.moveToFirst()!=false){
+
+            c.moveToFirst();
+            int titleIndex = c.getColumnIndex("title");
+            title = c.getString(titleIndex);
+            c.close();
+            db.close();
+        }
 
         if (title.equals(mTitle)) {
 

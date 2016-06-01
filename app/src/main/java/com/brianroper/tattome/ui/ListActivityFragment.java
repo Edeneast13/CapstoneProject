@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.brianroper.tattome.R;
+import com.brianroper.tattome.util.NetworkTest;
 import com.brianroper.tattome.util.TattooAdapter;
 import com.brianroper.tattome.rest.TattooTask;
 
@@ -40,17 +42,23 @@ public class ListActivityFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
         mRecyclerView = (RecyclerView)root.findViewById(R.id.tattoo_list);
 
-        splitPage();
+        if(NetworkTest.activeNetworkCheck(getActivity()) == true){
 
-        TattooAdapter adapter = new TattooAdapter(getActivity(), mUrlList, mTitleList);
-        mRecyclerView.setAdapter(adapter);
-        mRecyclerView.setHasFixedSize(true);
+            splitPage();
 
-        StaggeredGridLayoutManager sglm =
-                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            TattooAdapter adapter = new TattooAdapter(getActivity(), mUrlList, mTitleList);
+            mRecyclerView.setAdapter(adapter);
+            mRecyclerView.setHasFixedSize(true);
 
-        mRecyclerView.setLayoutManager(sglm);
+            StaggeredGridLayoutManager sglm =
+                    new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 
+            mRecyclerView.setLayoutManager(sglm);
+        }else{
+
+            Toast.makeText(getActivity(), getResources().getString(R.string.no_network),
+                    Toast.LENGTH_LONG).show();
+        }
         return root;
     }
 
@@ -112,21 +120,12 @@ public class ListActivityFragment extends Fragment {
             mUrlList.add(tattooMatcher.group(1));
         }
 
-        for (int i = 0; i < mUrlList.size(); i++) {
-
-            Log.i("URL: ", mUrlList.get(i));
-        }
-
         Pattern titlePattern = Pattern.compile("alt=\"(.*?)\"");
         Matcher titleMatcher = titlePattern.matcher(splitData[1]);
 
         while(titleMatcher.find()){
 
             mTitleList.add(titleMatcher.group(1));
-        }
-
-        for (int i = 0; i < mTitleList.size(); i++) {
-            Log.i("TITLE: ", mTitleList.get(i));
         }
     }
 }

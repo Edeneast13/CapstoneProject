@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.brianroper.tattome.R;
 import com.brianroper.tattome.User;
+import com.brianroper.tattome.util.NetworkTest;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -135,14 +136,21 @@ public class GetStartedActivity extends AppCompatActivity {
 
     public void loginAccount(View v){
 
-       String email = mEmailEntry.getText().toString();
-       String password = mPasswordEntry.getText().toString();
+        if(NetworkTest.activeNetworkCheck(getApplicationContext()) == true){
 
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(password);
+            String email = mEmailEntry.getText().toString();
+            String password = mPasswordEntry.getText().toString();
 
-        authenticateAccountLogin(user.getEmail(), user.getPassword());
+            User user = new User();
+            user.setEmail(email);
+            user.setPassword(password);
+
+            authenticateAccountLogin(user.getEmail(), user.getPassword());
+        }else{
+
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_network),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     public void signUpIntent(View v){
@@ -177,14 +185,22 @@ public class GetStartedActivity extends AppCompatActivity {
 
     public void googleLogin(){
 
-        mGoogleSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(NetworkTest.activeNetworkCheck(getApplicationContext())==true){
 
-                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-            }
-        });
+            mGoogleSignIn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                    startActivityForResult(signInIntent, RC_SIGN_IN);
+                }
+            });
+        }else{
+
+            Toast.makeText(GetStartedActivity.this, "Authentication failed.",
+                    Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account){

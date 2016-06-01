@@ -5,7 +5,7 @@
           android:layout_height="match_parent"
           android:id="@+id/favorites_grid"
           android:columnWidth="90dp"
-          android:numColumns="3"
+          android:numColumns="2"
           android:stretchMode="columnWidth"
           android:gravity="center"
           android:layout_marginTop="55dp">
