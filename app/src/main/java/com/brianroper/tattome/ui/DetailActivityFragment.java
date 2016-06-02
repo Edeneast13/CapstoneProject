@@ -8,13 +8,18 @@ import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,6 +31,7 @@ import com.brianroper.tattome.database.DbHandler;
 import com.brianroper.tattome.util.BitmapConvertTask;
 import com.brianroper.tattome.util.ByteArrayConvertTask;
 import com.brianroper.tattome.util.DbBitmapUtil;
+import com.brianroper.tattome.util.ImageviewConvertTask;
 import com.brianroper.tattome.util.NetworkTest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,6 +42,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -61,6 +72,8 @@ public class DetailActivityFragment extends Fragment {
         mFloatingActionButton = (FloatingActionButton) root.findViewById(R.id.fav_fab);
         mTitleTextView = (TextView)root.findViewById(R.id.detail_textview);
 
+        setHasOptionsMenu(true);
+
         if(NetworkTest.activeNetworkCheck(getActivity()) == true) {
 
             populateImageWithIntent();
@@ -73,6 +86,42 @@ public class DetailActivityFragment extends Fragment {
         }
 
         return root;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+
+            case R.id.action_share:
+
+                ImageviewConvertTask shareTask = new ImageviewConvertTask();
+                try {
+                    Bitmap imageviewBitmap = shareTask.execute(mFullImageView).get();
+
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, DbBitmapUtil.convertBitmapToByteArray(imageviewBitmap));
+                    sendIntent.setType("image/jpg");
+                    startActivity(sendIntent);
+
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        getActivity().getMenuInflater().inflate(R.menu.menu_detail, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     public void populateImageWithIntent(){
