@@ -18,6 +18,8 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".ui.CreateAccountActivity"
         tools:showIn="@layout/activity_create_account"
@@ -65,7 +67,8 @@
             android:singleLine="false"
             android:layout_marginTop="3dp"
             android:textSize="30sp"
-            android:backgroundTint="#ffffff"/>
+            android:backgroundTint="#ffffff"
+            android:contentDescription="@string/enter_email"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -93,7 +96,8 @@
             android:textSize="30sp"
             android:layout_marginTop="3dp"
             android:backgroundTint="@color/textIcons"
-            android:textColor="@color/textIcons"/>
+            android:textColor="@color/textIcons"
+            android:contentDescription="@string/enter_password"/>
 
         <Button
             android:layout_width="fill_parent"
@@ -107,7 +111,8 @@
             android:background="@color/colorAccent"
             android:layout_marginTop="5dp"
             android:onClick="createAccount"
-            android:elevation="6dp"/>
+            android:elevation="6dp"
+            android:contentDescription="@string/signup_button"/>
 
     </RelativeLayout>
 

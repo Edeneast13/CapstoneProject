@@ -24,6 +24,7 @@ import com.brianroper.tattome.util.BitmapConvertTask;
 import com.brianroper.tattome.util.ByteArrayConvertTask;
 import com.brianroper.tattome.util.DbBitmapUtil;
 import com.brianroper.tattome.util.FavoritesAdapter;
+import com.brianroper.tattome.util.NetworkTest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -113,19 +114,22 @@ public class FavoritesActivityFragment extends Fragment {
 
             Boolean syncFavs = mSharedPreferences.getBoolean("firebaseCheckbox", false);
 
-            if(syncFavs == true){
+            if(NetworkTest.activeNetworkCheck(getActivity()) == true){
 
-                for (int i = 0; i < mByteFromDb.size(); i++) {
+                if(syncFavs == true){
 
-                    byte[] image = mByteFromDb.get(i);
-                    String imageTitle = mTitleList.get(i);
+                    for (int i = 0; i < mByteFromDb.size(); i++) {
 
-                    storeFavoriteInFirebaseStorage(userRoot[0], image, imageTitle);
+                        byte[] image = mByteFromDb.get(i);
+                        String imageTitle = mTitleList.get(i);
+
+                        storeFavoriteInFirebaseStorage(userRoot[0], image, imageTitle);
+                    }
                 }
-            }
-            else{
+                else{
 
-                Log.i("FirebaseStorage: ", "Not Active");
+                    Log.i("FirebaseStorage: ", "Not Active");
+                }
             }
         }
         catch (Exception e){

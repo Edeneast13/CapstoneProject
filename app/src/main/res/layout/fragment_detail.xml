@@ -26,7 +26,8 @@
                 android:adjustViewBounds="true"
                 android:layout_gravity="center_vertical"
                 android:scaleType="fitStart"
-                android:src="@drawable/tattooplaceholder"/>
+                android:src="@drawable/tattooplaceholder"
+                android:contentDescription="@string/tattoo_detail"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -35,7 +36,8 @@
                 android:fontFamily="sans-serif-light"
                 android:textAlignment="center"
                 android:layout_gravity="center"
-                android:textSize="23sp"/>
+                android:textSize="23sp"
+                android:contentDescription="@string/tattoo_title"/>
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
@@ -46,7 +48,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/starempty"/>
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
+        android:src="@drawable/starempty"
+        android:contentDescription="@string/add_to_favs_button"/>
 
 </FrameLayout>
 

@@ -5,6 +5,7 @@
         android:title="@string/firebase_check_title"
         android:defaultValue="false"
         android:summary="@string/firebase_check_summary"
-        android:key="firebaseCheckbox"/>
+        android:key="firebaseCheckbox"
+        android:contentDescription="@string/cloud_settings"/>
 
 </PreferenceScreen>

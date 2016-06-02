@@ -13,7 +13,8 @@
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/tattoo_list">
+        android:id="@+id/tattoo_list"
+        android:contentDescription="@string/tattoo_content">
 
     </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

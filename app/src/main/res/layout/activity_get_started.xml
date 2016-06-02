@@ -18,6 +18,8 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".ui.GetStartedActivity"
         tools:showIn="@layout/activity_get_started"
@@ -26,7 +28,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title"
+            android:text="@string/app_title"
             android:id="@+id/title_textView"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
@@ -34,8 +36,9 @@
             android:textColor="@color/textIcons"
             android:textSize="45sp"
             android:typeface="sans"
-            android:fontFamily="sans-serif-light"
-            android:textIsSelectable="true"/>
+            android:fontFamily="sans-serif"
+            android:textIsSelectable="true"
+            android:contentDescription="@string/app_name"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -45,7 +48,6 @@
             android:layout_below="@+id/title_textView"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-
             android:textColor="@color/textIcons"
             android:textSize="22sp"
             android:fontFamily="sans-serif-light"
@@ -65,7 +67,8 @@
             android:singleLine="false"
             android:layout_marginTop="3dp"
             android:textSize="30sp"
-            android:backgroundTint="#ffffff"/>
+            android:backgroundTint="#ffffff"
+            android:contentDescription="@string/enter_email"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -93,7 +96,8 @@
             android:textSize="30sp"
             android:layout_marginTop="3dp"
             android:backgroundTint="@color/textIcons"
-            android:textColor="@color/textIcons"/>
+            android:textColor="@color/textIcons"
+            android:contentDescription="@string/enter_password"/>
 
         <Button
             android:layout_width="fill_parent"
@@ -107,7 +111,8 @@
             android:background="@color/colorAccent"
             android:layout_marginTop="5dp"
             android:onClick="loginAccount"
-            android:elevation="6dp"/>
+            android:elevation="6dp"
+            android:contentDescription="@string/login_button"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -123,13 +128,15 @@
             android:paddingTop="13dp"
             android:fontFamily="sans-serif-light"
             android:onClick="signUpIntent"
-            android:paddingBottom="10dp"/>
+            android:paddingBottom="10dp"
+            android:contentDescription="@string/create_account_intent"/>
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/google_login_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/signup_intent_textview">
+            android:layout_below="@+id/signup_intent_textview"
+            android:contentDescription="@string/login_google_button">
         </com.google.android.gms.common.SignInButton>
 
     </RelativeLayout>
