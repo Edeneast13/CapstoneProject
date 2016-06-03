@@ -84,7 +84,6 @@ public class DetailActivityFragment extends Fragment {
             Toast.makeText(getActivity(), getResources().getString(R.string.no_network),
                     Toast.LENGTH_LONG).show();
         }
-
         return root;
     }
 
@@ -95,25 +94,8 @@ public class DetailActivityFragment extends Fragment {
 
             case R.id.action_share:
 
-                ImageviewConvertTask shareTask = new ImageviewConvertTask();
-                try {
-                    Bitmap imageviewBitmap = shareTask.execute(mFullImageView).get();
-
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_STREAM, DbBitmapUtil.convertBitmapToByteArray(imageviewBitmap));
-                    sendIntent.setType("image/jpg");
-                    startActivity(sendIntent);
-
-                }
-                catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
+                shareContentWithIntent();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -289,6 +271,42 @@ public class DetailActivityFragment extends Fragment {
 
         mFloatingActionButton.setImageResource(R.drawable.starempty);
     }
+    }
+
+    public void shareContentWithIntent(){
+
+        ImageviewConvertTask shareTask = new ImageviewConvertTask();
+        try {
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            byte[] imageviewBytes = null;
+            Bitmap imageviewBitmap = shareTask.execute(mFullImageView).get();
+            imageviewBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
+            byteArrayOutputStream.flush();
+            imageviewBytes = byteArrayOutputStream.toByteArray();
+            byteArrayOutputStream.close();
+
+            String imageviewString = imageviewBytes.toString();
+            Uri imageviewUri = Uri.parse(imageviewString);
+
+            Log.i("URI: ", imageviewUri.toString());
+
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_STREAM, imageviewUri);
+            sendIntent.setType("image/jpeg");
+            startActivity(Intent.createChooser(sendIntent, getResources().getString(R.string.share)));
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public byte[] convertBitmapToByteArrayAsync(Bitmap bitmap){
