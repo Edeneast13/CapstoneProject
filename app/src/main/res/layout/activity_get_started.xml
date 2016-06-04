@@ -139,6 +139,13 @@
             android:contentDescription="@string/login_google_button">
         </com.google.android.gms.common.SignInButton>
 
+        <com.facebook.login.widget.LoginButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/facebook_login_button"
+            android:layout_below="@+id/google_login_button"
+            android:layout_marginTop="13dp"/>
+
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

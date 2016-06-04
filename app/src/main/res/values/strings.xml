@@ -57,5 +57,7 @@
     <string name="tattoo_title">Name of the tattoo</string>
     <string name="tattoo_detail">Detailed image of the tattoo selected </string>
     <string name="cloud_settings">Synch data to the cloud by checking this preference</string>
+    
+    <string name="facebook_app_id">1053799981379112</string>
 
 </resources>

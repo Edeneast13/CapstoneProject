@@ -127,5 +127,8 @@ public class ListActivityFragment extends Fragment {
 
             mTitleList.add(titleMatcher.group(1));
         }
+
+        mUrlList.remove(16);
+        mUrlList.remove(15);
     }
 }

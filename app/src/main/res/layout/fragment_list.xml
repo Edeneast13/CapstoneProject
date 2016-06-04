@@ -17,4 +17,5 @@
         android:contentDescription="@string/tattoo_content">
 
     </android.support.v7.widget.RecyclerView>
+
 </RelativeLayout>

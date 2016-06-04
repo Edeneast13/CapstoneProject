@@ -73,11 +73,11 @@ public class DetailActivityFragment extends Fragment {
         mTitleTextView = (TextView)root.findViewById(R.id.detail_textview);
 
         setHasOptionsMenu(true);
+        setFloatingActionButtonListener();
 
         if(NetworkTest.activeNetworkCheck(getActivity()) == true) {
 
             populateImageWithIntent();
-            setFloatingActionButton();
             setDefaultFabImageResource();
         }else{
 
@@ -95,6 +95,7 @@ public class DetailActivityFragment extends Fragment {
             case R.id.action_share:
 
                 shareContentWithIntent();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -151,89 +152,94 @@ public class DetailActivityFragment extends Fragment {
 
     }
 
-    public void setFloatingActionButton(){
+    public void setFloatingActionButtonListener(){
 
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                DbHandler dbHandler = new DbHandler(getContext());
-                SQLiteDatabase sqLiteDatabase;
-
-                try {
-
-                    sqLiteDatabase = dbHandler.getReadableDatabase();
-
-                    Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM favorites WHERE title = \"" + mTitle + "\"", null);
-                    c.moveToFirst();
-                    int titleIndex = c.getColumnIndex("title");
-                    String title = c.getString(titleIndex);
-
-                    c.close();
-
-                    if (title.equals(mTitle)) {
-
-                        mFloatingActionButton.setImageResource(R.drawable.starempty);
-
-                        sqLiteDatabase = dbHandler.getWritableDatabase();
-
-                        sqLiteDatabase.delete("favorites", "title == " + "\"" + mTitle + "\"", null);
-
-                        sqLiteDatabase.close();
-
-                        Toast.makeText(getActivity(),
-                                mTitle + " " +
-                                        getString(R.string.favorites_remove_toast),
-                                Toast.LENGTH_LONG).show();
-                    } else if (!(title.equals(mTitle))) {
-
-                        mFloatingActionButton.setImageResource(R.drawable.starfull);
-
-                        sqLiteDatabase = dbHandler.getWritableDatabase();
-
-                        ImageView mPosterRef = mFullImageView;
-                        Bitmap posterBitmap = DbBitmapUtil.convertImageViewToBitmap(mPosterRef);
-                        byte[] posterByteArray = convertBitmapToByteArrayAsync(posterBitmap);
-
-                        ContentValues values = new ContentValues();
-                        values.put("title", mTitle);
-                        values.put("image", posterByteArray);
-
-                        sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
-
-                        sqLiteDatabase.close();
-
-                        Toast.makeText(getActivity(),
-                                mTitle + " " +
-                                        getResources().getString(R.string.favorites_saved),
-                                Toast.LENGTH_LONG).show();
-                    }
-                } catch (CursorIndexOutOfBoundsException e) {
-                    sqLiteDatabase = dbHandler.getWritableDatabase();
-
-                    ImageView mPosterRef = mFullImageView;
-                    Bitmap posterBitmap = DbBitmapUtil.convertImageViewToBitmap(mPosterRef);
-                    byte[] posterByteArray = convertBitmapToByteArrayAsync(posterBitmap);
-
-                    ContentValues values = new ContentValues();
-                    values.put("title", mTitle);
-                    values.put("image", posterByteArray);
-
-                    sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
-
-                    sqLiteDatabase.close();
-
-                    mFloatingActionButton.setImageResource(R.drawable.starfull);
-
-                    Toast.makeText(getActivity(),
-                            mTitle + " " +
-                                    getResources().getString(R.string.favorites_saved),
-                            Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                saveTattooToDb();
             }
         });
+    }
+
+    public void saveTattooToDb(){
+
+        DbHandler dbHandler = new DbHandler(getContext());
+        SQLiteDatabase sqLiteDatabase;
+
+        try {
+
+            sqLiteDatabase = dbHandler.getReadableDatabase();
+
+            Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM favorites WHERE title = \"" + mTitle + "\"", null);
+            c.moveToFirst();
+            int titleIndex = c.getColumnIndex("title");
+            String title = c.getString(titleIndex);
+
+            c.close();
+
+            if (title.equals(mTitle)) {
+
+                mFloatingActionButton.setImageResource(R.drawable.starempty);
+
+                sqLiteDatabase = dbHandler.getWritableDatabase();
+
+                sqLiteDatabase.delete("favorites", "title == " + "\"" + mTitle + "\"", null);
+
+                sqLiteDatabase.close();
+
+                Toast.makeText(getActivity(),
+                        mTitle + " " +
+                                getString(R.string.favorites_remove_toast),
+                        Toast.LENGTH_LONG).show();
+            } else if (!(title.equals(mTitle))) {
+
+                mFloatingActionButton.setImageResource(R.drawable.starfull);
+
+                sqLiteDatabase = dbHandler.getWritableDatabase();
+
+                ImageView mPosterRef = mFullImageView;
+                Bitmap posterBitmap = DbBitmapUtil.convertImageViewToBitmap(mPosterRef);
+                byte[] posterByteArray = convertBitmapToByteArrayAsync(posterBitmap);
+
+                ContentValues values = new ContentValues();
+                values.put("title", mTitle);
+                values.put("image", posterByteArray);
+
+                sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
+                sqLiteDatabase.close();
+
+                Toast.makeText(getActivity(),
+                        mTitle + " " +
+                                getResources().getString(R.string.favorites_saved),
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (CursorIndexOutOfBoundsException e) {
+            sqLiteDatabase = dbHandler.getWritableDatabase();
+
+            ImageView mPosterRef = mFullImageView;
+            Bitmap posterBitmap = DbBitmapUtil.convertImageViewToBitmap(mPosterRef);
+            byte[] posterByteArray = convertBitmapToByteArrayAsync(posterBitmap);
+
+            ContentValues values = new ContentValues();
+            values.put("title", mTitle);
+            values.put("image", posterByteArray);
+
+            sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
+            sqLiteDatabase.close();
+
+            mFloatingActionButton.setImageResource(R.drawable.starfull);
+
+            Toast.makeText(getActivity(),
+                    mTitle + " " +
+                            getResources().getString(R.string.favorites_saved),
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setDefaultFabImageResource(){

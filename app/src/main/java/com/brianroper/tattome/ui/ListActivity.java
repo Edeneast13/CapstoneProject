@@ -56,7 +56,6 @@ public class ListActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(getApplicationContext()
                 .getResources()
                 .getString(R.string.app_title));
-
     }
 
     @Override
