@@ -117,11 +117,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="45dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:layout_marginEnd="45dp"
             android:text="@string/create_account_textview"
             android:id="@+id/signup_intent_textview"
             android:layout_below="@+id/login_button"
-            android:layout_toEndOf="@+id/textView2"
-            android:layout_toRightOf="@+id/textView2"
             android:textColor="@color/textIcons"
             android:clickable="true"
             android:textSize="18sp"
@@ -136,7 +139,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/signup_intent_textview"
-            android:contentDescription="@string/login_google_button">
+            android:contentDescription="@string/login_google_button"
+            android:paddingBottom="2dp">
         </com.google.android.gms.common.SignInButton>
 
         <com.facebook.login.widget.LoginButton
@@ -144,7 +148,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/facebook_login_button"
             android:layout_below="@+id/google_login_button"
-            android:layout_marginTop="13dp"/>
+            android:layout_marginTop="13dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"/>
 
     </RelativeLayout>
 

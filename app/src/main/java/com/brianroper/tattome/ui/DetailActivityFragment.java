@@ -33,6 +33,9 @@ import com.brianroper.tattome.util.ByteArrayConvertTask;
 import com.brianroper.tattome.util.DbBitmapUtil;
 import com.brianroper.tattome.util.ImageviewConvertTask;
 import com.brianroper.tattome.util.NetworkTest;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,6 +62,8 @@ public class DetailActivityFragment extends Fragment {
     private String mTitle;
     private String mUrl= "";
     private TextView mTitleTextView;
+    private AdView mAdView;
+    private AdRequest mAdRequest;
 
     public DetailActivityFragment() {
     }
@@ -71,6 +76,9 @@ public class DetailActivityFragment extends Fragment {
         mFullImageView = (ImageView)root.findViewById(R.id.full_tattoo_imageview);
         mFloatingActionButton = (FloatingActionButton) root.findViewById(R.id.fav_fab);
         mTitleTextView = (TextView)root.findViewById(R.id.detail_textview);
+        mAdView = (AdView)root.findViewById(R.id.adView);
+
+        MobileAds.initialize(getActivity(), getString(R.string.banner_ad_unit_id));
 
         setHasOptionsMenu(true);
         setFloatingActionButtonListener();
@@ -79,6 +87,7 @@ public class DetailActivityFragment extends Fragment {
 
             populateImageWithIntent();
             setDefaultFabImageResource();
+            populateAdView();
         }else{
 
             Toast.makeText(getActivity(), getResources().getString(R.string.no_network),
@@ -313,6 +322,12 @@ public class DetailActivityFragment extends Fragment {
         catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public void populateAdView(){
+
+        mAdRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(mAdRequest);
     }
 
     public byte[] convertBitmapToByteArrayAsync(Bitmap bitmap){
