@@ -2,6 +2,7 @@ package com.brianroper.tattome.ui;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -69,8 +70,11 @@ public class GetStartedActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        mBundle = ActivityOptions.makeSceneTransitionAnimation(this)
-                .toBundle();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+
+            mBundle = ActivityOptions.makeSceneTransitionAnimation(this)
+                    .toBundle();
+        }
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override

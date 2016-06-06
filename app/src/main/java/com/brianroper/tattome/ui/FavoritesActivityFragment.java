@@ -49,7 +49,6 @@ public class FavoritesActivityFragment extends Fragment {
     private SharedPreferences mSharedPreferences;
     private String[] userRoot;
     private final String FIREBASE_BUCKET = "gs://tattoo-b7ce6.appspot.com";
-    private final String FIREBASE_IMAGE_STORE = "images";
 
     public FavoritesActivityFragment() {
     }

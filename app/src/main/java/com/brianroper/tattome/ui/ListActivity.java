@@ -5,16 +5,22 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.InflateException;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 
@@ -26,6 +32,8 @@ import com.brianroper.tattome.util.NetworkTest;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -44,8 +52,11 @@ public class ListActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mNavigationView = (NavigationView)findViewById(R.id.nav_view);
 
-        mBundle = ActivityOptions.makeSceneTransitionAnimation(this)
-                .toBundle();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+
+            mBundle = ActivityOptions.makeSceneTransitionAnimation(this)
+                    .toBundle();
+        }
 
         setUpDrawerContent(mNavigationView);
 
