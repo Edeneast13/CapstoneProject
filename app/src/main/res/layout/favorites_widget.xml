@@ -12,8 +12,22 @@
         android:textStyle="bold|italic"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_margin="8dp"/>
+        android:layout_margin="8dp"
+        android:id="@+id/appwidget_title"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/textIcons"
+        android:fontFamily="sans-serif"/>
 
-
+    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:id="@+id/favorites_widget_grid"
+              android:columnWidth="90dp"
+              android:numColumns="2"
+              android:stretchMode="columnWidth"
+              android:gravity="center"
+              android:layout_marginTop="55dp">
+    </GridView>
 
 </LinearLayout>
