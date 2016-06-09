@@ -84,7 +84,6 @@ public class DetailActivityFragment extends Fragment {
         setFloatingActionButtonListener();
 
         if(NetworkTest.activeNetworkCheck(getActivity()) == true) {
-
             populateImageWithIntent();
             setDefaultFabImageResource();
             populateAdView();

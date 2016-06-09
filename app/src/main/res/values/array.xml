@@ -3,16 +3,26 @@
 
     <string-array name="category_items">
         <item>Animal</item>
+        <item>Belly</item>
+        <item>Black and Grey</item>
         <item>Bug</item>
         <item>Cartoon</item>
         <item>Cat</item>
+        <item>Collar Bone</item>
         <item>Cute</item>
+        <item>Floral</item>
         <item>Geometric</item>
         <item>Henna</item>
+        <item>Historical Figures</item>
+        <item>Knee</item>
+        <item>Leg</item>
+        <item>Lip</item>
         <item>Mandala</item>
         <item>Minimalistic</item>
+        <item>Neck</item>
         <item>Plant</item>
         <item>Religious</item>
+        <item>Vintage</item>
         <item>Watercolor</item>
         <item>Word</item>
         <item>Wrist</item>

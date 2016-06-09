@@ -153,16 +153,26 @@ public class ListActivity extends AppCompatActivity {
                                 String category = "category";
                                 String[] array = new String[]{
                                         "animal-tattoos",
+                                        "belly-tattoos",
+                                        "black-ink",
                                         "bug-tattoos",
                                         "cartoon-tattoos",
                                         "cat-tattoos",
+                                        "collarbone-tattoos",
                                         "cute-tattoos-2",
+                                        "floral-tattoos",
                                         "geometric-tattoos-2",
                                         "henna",
+                                        "historical-figures",
+                                        "knee-tattoos",
+                                        "leg-tattoos",
+                                        "lip-tattoos",
                                         "mandala-tattoos",
                                         "minimalistic",
+                                        "neck-tattoos",
                                         "plant-tattoos",
                                         "religious-tattoos",
+                                        "vintage-tattoos",
                                         "watercolor-tattoos",
                                         "words-tattoos",
                                         "wrist-tattoos"
@@ -225,6 +235,47 @@ public class ListActivity extends AppCompatActivity {
 
                                     case 13:
                                         i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 14:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 15:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 16:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 17:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 18:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 19:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 20:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 21:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 22:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 23:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
                                 }
                                 startActivity(i, mBundle);
                             }
