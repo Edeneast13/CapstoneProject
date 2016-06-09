@@ -40,6 +40,8 @@ import com.facebook.FacebookSdk;
 
 public class GetStartedActivity extends AppCompatActivity {
 
+    /*FIELDS */
+
     private EditText mEmailEntry;
     private EditText mPasswordEntry;
     private FirebaseAuth mAuth;
@@ -51,6 +53,8 @@ public class GetStartedActivity extends AppCompatActivity {
     private Bundle mBundle;
     private LoginButton mFacebookSignIn;
     private CallbackManager mCallbackManager;
+
+    /*LIFE CYCLE METHODS */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +74,15 @@ public class GetStartedActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        //test to prevent SDKs older than Lollipop from crashing because of transition
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 
             mBundle = ActivityOptions.makeSceneTransitionAnimation(this)
                     .toBundle();
         }
 
+        /*firebase checks here for a currently logged in user if there is one they are
+        * redirected passed the login activity of the app */
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(FirebaseAuth firebaseAuth) {
@@ -92,7 +99,6 @@ public class GetStartedActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else{
-
                     Log.i("Status: ", "not logged in");
                 }
             }
@@ -128,7 +134,7 @@ public class GetStartedActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        //disables activity back action
     }
 
     @Override
@@ -136,19 +142,20 @@ public class GetStartedActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == RC_SIGN_IN){
-
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
 
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
 }
-
+    /*Login user using google login and authentication*/
     private void handleSignInResult(GoogleSignInResult result){
 
         Log.d("TAG", "handleSignInResult:" + result.isSuccess());
         if(result.isSuccess()){
 
+            /*if result returns successful the user will be logged into the app with
+             * their google account  */
             GoogleSignInAccount account = result.getSignInAccount();
             firebaseAuthWithGoogle(account);
         }
@@ -159,6 +166,9 @@ public class GetStartedActivity extends AppCompatActivity {
         }
     }
 
+    /*BUTTON LISTENERS */
+
+    /*OnClick method for login account button*/
     public void loginAccount(View v){
 
         if(NetworkTest.activeNetworkCheck(getApplicationContext()) == true){
@@ -178,12 +188,15 @@ public class GetStartedActivity extends AppCompatActivity {
         }
     }
 
+    /*OnClick method for create a new account clickable textview */
     public void signUpIntent(View v){
-
         Intent i = new Intent(getApplicationContext(), CreateAccountActivity.class);
         startActivity(i);
     }
 
+    /*AUTHENTICATION METHODS */
+
+    /*Account login authentication using firebase */
     public void authenticateAccountLogin(final String username, final String password){
 
             mAuth.signInWithEmailAndPassword(username, password)
@@ -208,6 +221,7 @@ public class GetStartedActivity extends AppCompatActivity {
                     });
     }
 
+    /*method for logging in using google*/
     public void googleLogin(){
 
         if(NetworkTest.activeNetworkCheck(getApplicationContext())==true){
@@ -227,7 +241,7 @@ public class GetStartedActivity extends AppCompatActivity {
         }
 
     }
-
+    /*firebase authentication for google login*/
     private void firebaseAuthWithGoogle(GoogleSignInAccount account){
 
         AuthCredential credential = GoogleAuthProvider
@@ -252,6 +266,7 @@ public class GetStartedActivity extends AppCompatActivity {
                 });
     }
 
+    /*firebase authentication for facebook*/
     private void firebaseAuthWithFacebook(){
 
         mFacebookSignIn.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -277,6 +292,7 @@ public class GetStartedActivity extends AppCompatActivity {
         });
     }
 
+    /*method for handling returned token from facebook SDK for facebook login */
     private void handleFacebookAccessToken(AccessToken token){
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());

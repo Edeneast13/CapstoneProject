@@ -18,12 +18,16 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
+    /*FIELDS */
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private EditText mEmailEntry;
     private EditText mPasswordEntry;
     String mEmail ="";
     String mPass = "";
+
+    /*LIFE CYCLE METHODS*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,19 +41,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
-            public void onAuthStateChanged(FirebaseAuth firebaseAuth) {
-
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if(user!=null){
-
-
-                }
-                else{
-
-
-                }
-            }
+            public void onAuthStateChanged(FirebaseAuth firebaseAuth) {}
         };
     }
 
@@ -63,11 +55,13 @@ public class CreateAccountActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if(mAuthStateListener != null){
-
             mAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
 
+    /*LISTENER METHODS */
+
+    /* OnClick method for create account button */
     public void createAccount(View v){
 
         if(NetworkTest.activeNetworkCheck(getApplicationContext())==true){
@@ -81,6 +75,9 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
     }
 
+    /* ACCOUNT AUTHENTICATION METHODS*/
+
+    /* method for getting user input and sending it to firebase for authentication*/
     public void setUserCredentials(){
 
         mEmail = mEmailEntry.getText().toString();
@@ -96,6 +93,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
     }
 
+    /* method for create a user account through firebase authentication*/
     public void firebaseAccountCreation(String username, String password){
 
         mAuth.createUserWithEmailAndPassword(username, password)
