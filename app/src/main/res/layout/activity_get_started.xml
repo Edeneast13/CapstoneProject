@@ -134,23 +134,24 @@
             android:paddingBottom="10dp"
             android:contentDescription="@string/create_account_intent"/>
 
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/google_login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/signup_intent_textview"
-            android:contentDescription="@string/login_google_button"
-            android:paddingBottom="2dp">
-        </com.google.android.gms.common.SignInButton>
-
         <com.facebook.login.widget.LoginButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/facebook_login_button"
-            android:layout_below="@+id/google_login_button"
+            android:layout_below="@+id/signup_intent_textview"
             android:layout_marginTop="13dp"
             android:paddingTop="15dp"
             android:paddingBottom="15dp"/>
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/google_login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/facebook_login_button"
+            android:contentDescription="@string/login_google_button"
+            android:paddingBottom="2dp"
+            android:visibility="invisible">
+        </com.google.android.gms.common.SignInButton>
 
     </RelativeLayout>
 

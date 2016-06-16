@@ -206,7 +206,7 @@ public class GetStartedActivity extends AppCompatActivity {
 
                             if (!task.isSuccessful()) {
 
-                                Toast.makeText(GetStartedActivity.this, "Authentication failed.",
+                                Toast.makeText(GetStartedActivity.this, "Authentication failed",
                                         Toast.LENGTH_SHORT).show();
                             } else {
 

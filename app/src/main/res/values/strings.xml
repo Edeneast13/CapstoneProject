@@ -60,8 +60,12 @@
     <string name="cloud_settings">Synch data to the cloud by checking this preference</string>
     
     <string name="facebook_app_id">1053799981379112</string>
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id">ca-app-pub-8401259315816623/8736012991</string>
 
     <string name="appwidget_text">tattThat Favorites</string>
+
+    <string name="pass_length">Password to short. Please enter a minimum of 6 characters.</string>
+    <string name="empty_text">Please enter your email and password before proceeding.</string>
+    <string name="invalid_email">Please enter a correct email address.</string>
 
 </resources>

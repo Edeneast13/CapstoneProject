@@ -3,6 +3,7 @@ package com.brianroper.tattome.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -83,6 +84,20 @@ public class CreateAccountActivity extends AppCompatActivity {
         mEmail = mEmailEntry.getText().toString();
         mPass = mPasswordEntry.getText().toString();
 
+        int passLength = mPasswordEntry.getText().length();
+
+        if(passLength < 6){
+
+            Toast.makeText(getApplicationContext(), getString(R.string.pass_length),
+                    Toast.LENGTH_LONG).show();
+        }
+
+        if(isValidEmail(mEmail) == false){
+
+            Toast.makeText(getApplicationContext(), getString(R.string.invalid_email),
+                    Toast.LENGTH_LONG).show();
+        }
+
         if((!mEmail.equals(null)) && (!mPass.equals(null))){
 
             User user = new User();
@@ -90,7 +105,17 @@ public class CreateAccountActivity extends AppCompatActivity {
             user.setPassword(mPass);
 
             firebaseAccountCreation(user.getEmail(), user.getPassword());
+        }else{
+
+            Toast.makeText(getApplicationContext(), getString(R.string.empty_text),
+                    Toast.LENGTH_LONG).show();
         }
+    }
+
+    /*Email check */
+    public boolean isValidEmail(CharSequence email){
+
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     /* method for create a user account through firebase authentication*/
