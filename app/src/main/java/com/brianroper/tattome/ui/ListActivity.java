@@ -158,6 +158,7 @@ public class ListActivity extends AppCompatActivity {
                                         "bug-tattoos",
                                         "cartoon-tattoos",
                                         "cat-tattoos",
+                                        "celebrities-tattoos",
                                         "collarbone-tattoos",
                                         "cute-tattoos-2",
                                         "floral-tattoos",
@@ -169,6 +170,8 @@ public class ListActivity extends AppCompatActivity {
                                         "lip-tattoos",
                                         "mandala-tattoos",
                                         "minimalistic",
+                                        "movie-tattoos",
+                                        "music-tattoos",
                                         "neck-tattoos",
                                         "plant-tattoos",
                                         "religious-tattoos",
@@ -177,7 +180,6 @@ public class ListActivity extends AppCompatActivity {
                                         "words-tattoos",
                                         "wrist-tattoos"
                                 };
-
 
                                 switch (dialog.getSelectedIndex()){
 
@@ -274,6 +276,26 @@ public class ListActivity extends AppCompatActivity {
                                         break;
 
                                     case 23:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 24:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 25:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 26:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 27:
+                                        i.putExtra(category, array[dialog.getSelectedIndex()]);
+                                        break;
+
+                                    case 28:
                                         i.putExtra(category, array[dialog.getSelectedIndex()]);
                                         break;
                                 }

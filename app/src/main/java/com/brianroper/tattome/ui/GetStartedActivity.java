@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -301,7 +302,7 @@ public class GetStartedActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        if(!task.isSuccessful()){
+                        if (!task.isSuccessful()) {
 
                             Toast.makeText(getApplicationContext(),
                                     "Authentication Failed",

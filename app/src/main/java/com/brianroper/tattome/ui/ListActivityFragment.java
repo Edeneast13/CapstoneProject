@@ -106,6 +106,7 @@ public class ListActivityFragment extends Fragment {
         return null;
     }
 
+    /* Splits the page to remove useless code from url */
     public void splitPage(){
 
         String data = getTattooUrls();
@@ -128,7 +129,22 @@ public class ListActivityFragment extends Fragment {
             mTitleList.add(titleMatcher.group(1));
         }
 
-        mUrlList.remove(16);
-        mUrlList.remove(15);
+        /*Removes unwanted images from last two positions of the list */
+
+        int listSize = mUrlList.size();
+
+        if(listSize >= 15){
+
+            mUrlList.remove(16);
+            mUrlList.remove(15);
+        }
+
+        if(listSize < 15){
+
+            int removeListLast = listSize - 1;
+            int removeSecondLast = listSize - 2;
+            mUrlList.remove(removeListLast);
+            mUrlList.remove(removeSecondLast);
+        }
     }
 }

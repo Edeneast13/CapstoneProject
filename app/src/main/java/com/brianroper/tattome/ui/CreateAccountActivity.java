@@ -1,8 +1,12 @@
 package com.brianroper.tattome.ui;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
@@ -34,6 +38,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
+        handleTransitionAnimations();
 
         mEmailEntry = (EditText)findViewById(R.id.create_email);
         mPasswordEntry = (EditText)findViewById(R.id.create_password);
@@ -57,6 +62,19 @@ public class CreateAccountActivity extends AppCompatActivity {
         super.onStop();
         if(mAuthStateListener != null){
             mAuth.removeAuthStateListener(mAuthStateListener);
+        }
+    }
+
+    /*Method for handling activity transition */
+    public void handleTransitionAnimations(){
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+
+            Slide slide = new Slide();
+            slide.setDuration(1000);
+
+            getWindow().setEnterTransition(slide);
+            getWindow().setExitTransition(slide);
         }
     }
 

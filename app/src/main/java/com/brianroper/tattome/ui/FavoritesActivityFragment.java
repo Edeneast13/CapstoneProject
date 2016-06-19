@@ -12,11 +12,14 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brianroper.tattome.R;
 import com.brianroper.tattome.database.DbHandler;
@@ -130,11 +133,6 @@ public class FavoritesActivityFragment extends Fragment {
                     Log.i("FirebaseStorage: ", "Not Active");
                 }
             }
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        finally {
 
             Bitmap[] bitmaps = new Bitmap[mBitmapsFromDb.size()];
 
@@ -151,6 +149,14 @@ public class FavoritesActivityFragment extends Fragment {
             byte[] bytes = convertBitmapToByteArrayAsync(bitmap);
 
             gridviewClickListener();
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            e.printStackTrace();
+            Toast.makeText(getActivity(), getString(R.string.favorites_null),
+                    Toast.LENGTH_LONG).show();
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
 
