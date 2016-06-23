@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Base64;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import com.brianroper.tattome.R;
 import com.brianroper.tattome.database.DbHandler;
+import com.brianroper.tattome.database.Favorites;
 import com.brianroper.tattome.util.BitmapConvertTask;
 import com.brianroper.tattome.util.ByteArrayConvertTask;
 import com.brianroper.tattome.util.DbBitmapUtil;
@@ -32,6 +34,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -52,6 +59,8 @@ public class FavoritesActivityFragment extends Fragment {
     private SharedPreferences mSharedPreferences;
     private String[] userRoot;
     private final String FIREBASE_BUCKET = "gs://tattoo-b7ce6.appspot.com";
+    private ArrayList<Uri> mDownloadUriList = new ArrayList<Uri>();
+    private ArrayList<Favorites> mFavoritesList = new ArrayList<Favorites>();
 
     public FavoritesActivityFragment() {
     }
@@ -68,12 +77,27 @@ public class FavoritesActivityFragment extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         userRoot = user.getEmail().split("@");
 
-        populateViewFromDb();
+        Boolean syncFavs = mSharedPreferences.getBoolean("firebaseCheckbox", false);
+
+        boolean dbTest = populateViewFromDb(syncFavs);
+
+        if(dbTest == false && NetworkTest.activeNetworkCheck(getActivity()) == true){
+
+           if(mFavoritesList == null){
+
+               getFavoritesFromFirebaseDatabase();
+               populateViewWithFirebaseStorage(mFavoritesList);
+           }
+            else{
+
+               populateViewWithFirebaseStorage(mFavoritesList);
+           }
+        }
 
         return root;
     }
 
-    public void populateViewFromDb(){
+    public boolean populateViewFromDb(Boolean syncFavs){
 
         String title;
         Bitmap imageBitmap;
@@ -114,8 +138,6 @@ public class FavoritesActivityFragment extends Fragment {
             titleCursor.close();
             sqLiteDatabase.close();
 
-            Boolean syncFavs = mSharedPreferences.getBoolean("firebaseCheckbox", false);
-
             if(NetworkTest.activeNetworkCheck(getActivity()) == true){
 
                 if(syncFavs == true){
@@ -138,7 +160,7 @@ public class FavoritesActivityFragment extends Fragment {
 
             bitmaps = mBitmapsFromDb.toArray(bitmaps);
 
-            FavoritesAdapter adapter = new FavoritesAdapter(getActivity(), getId(), bitmaps);
+            FavoritesAdapter adapter = new FavoritesAdapter(getActivity(), getId(), bitmaps, null);
 
             mGridView.setAdapter(adapter);
 
@@ -154,10 +176,14 @@ public class FavoritesActivityFragment extends Fragment {
             e.printStackTrace();
             Toast.makeText(getActivity(), getString(R.string.favorites_null),
                     Toast.LENGTH_LONG).show();
+
+            return false;
         }
         catch (Exception e){
             e.printStackTrace();
         }
+
+        return true;
     }
 
     public void gridviewClickListener(){
@@ -222,7 +248,7 @@ public class FavoritesActivityFragment extends Fragment {
         return bitmap;
     }
 
-    public void storeFavoriteInFirebaseStorage(String user, byte[] image, String title){
+    public void storeFavoriteInFirebaseStorage(String user, byte[] image, final String title){
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -237,10 +263,8 @@ public class FavoritesActivityFragment extends Fragment {
             @Override
             public void onFailure(Exception e) {
 
-                //TODO: Implement snackbar to notify user of failure
-                //TODO: Allow for the user to retry
-
                 Log.i("Upload: ", "failed");
+
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -248,7 +272,62 @@ public class FavoritesActivityFragment extends Fragment {
 
                 Uri downloadUri = taskSnapshot.getDownloadUrl();
                 Log.i("Upload: ", "success");
+                Log.i("URI: ", downloadUri.toString());
+
+                Favorites favorite = new Favorites();
+                favorite.setTitle(title);
+                favorite.setTattooUrl(downloadUri);
+
+                mFavoritesList.add(favorite);
             }
         });
+
+        setFavoritesToFirebaseDatabase();
+    }
+
+    public void populateViewWithFirebaseStorage(ArrayList<Favorites> favorites){
+
+        for (int i = 0; i < mFavoritesList.size(); i++) {
+
+            Uri url = mFavoritesList.get(i).getTattooUrl();
+            mDownloadUriList.add(url);
+        }
+
+        FavoritesAdapter adapter = new FavoritesAdapter(getActivity(), getId(), null, mDownloadUriList);
+
+        mGridView.setAdapter(adapter);
+
+        gridviewClickListener();
+    }
+
+    public void getFavoritesFromFirebaseDatabase(){
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference dbRef = firebaseDatabase.getReference(userRoot[0]);
+
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Favorites favorites = dataSnapshot.getValue(Favorites.class);
+                mFavoritesList.add(favorites);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void setFavoritesToFirebaseDatabase(){
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference dbRef = firebaseDatabase.getReference(userRoot[0]);
+
+        for (int i = 0; i < mFavoritesList.size(); i++) {
+
+            dbRef.setValue(mFavoritesList.get(i));
+        }
     }
 }

@@ -2,11 +2,13 @@ package com.brianroper.tattome.ui;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -314,11 +316,27 @@ public class ListActivity extends AppCompatActivity {
 
             case R.id.nav_third_item:
 
+                SharedPreferences sharedPreferences = PreferenceManager
+                        .getDefaultSharedPreferences(getApplicationContext());
+
                 if(activeDb() == true){
 
                     Intent favoritesIntent = new Intent(getApplicationContext(),FavoritesActivity.class);
                     startActivity(favoritesIntent, mBundle);
                 }
+                else if(sharedPreferences.getBoolean("firebaseCheckbox", false) == true){
+
+                    try{
+
+                        Intent favoritesIntent = new Intent(getApplicationContext(),FavoritesActivity.class);
+                        startActivity(favoritesIntent, mBundle);
+                    }
+                    catch (Exception e){
+
+                        Toast.makeText(getApplicationContext(), R.string.favorites_null_with_network,
+                                Toast.LENGTH_LONG).show();
+                    }
+                 }
                 else{
 
                     Toast.makeText(getApplicationContext(), R.string.favorites_null,

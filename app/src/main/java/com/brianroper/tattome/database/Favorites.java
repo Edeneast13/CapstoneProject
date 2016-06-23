@@ -1,17 +1,28 @@
 package com.brianroper.tattome.database;
 
+import android.net.Uri;
+
 /**
  * Created by brianroper on 5/27/16.
  */
 public class Favorites {
 
-    private String tattooUrl;
+    private Uri tattooUrl;
+    private String title;
 
-    public String getTattooUrl() {
+    public Uri getTattooUrl() {
         return tattooUrl;
     }
 
-    public void setTattooUrl(String tattooUrl) {
+    public void setTattooUrl(Uri tattooUrl) {
         this.tattooUrl = tattooUrl;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
