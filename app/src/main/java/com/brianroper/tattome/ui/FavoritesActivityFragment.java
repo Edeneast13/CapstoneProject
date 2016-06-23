@@ -103,7 +103,7 @@ public class FavoritesActivityFragment extends Fragment {
 
         try {
 
-            Cursor imageCursor = sqLiteDatabase.rawQuery("SELECT * FROM favorites", null);
+            Cursor imageCursor = sqLiteDatabase.rawQuery("SELECT * FROM tattoo", null);
 
             int imageIndex = imageCursor.getColumnIndex("image");
             imageCursor.moveToFirst();
@@ -119,7 +119,7 @@ public class FavoritesActivityFragment extends Fragment {
 
             imageCursor.close();
 
-            Cursor titleCursor = sqLiteDatabase.rawQuery("SELECT * FROM favorites", null);
+            Cursor titleCursor = sqLiteDatabase.rawQuery("SELECT * FROM tattoo", null);
 
             int titleIndex = titleCursor.getColumnIndex("title");
             titleCursor.moveToFirst();

@@ -184,7 +184,7 @@ public class DetailActivityFragment extends Fragment {
 
             sqLiteDatabase = dbHandler.getReadableDatabase();
 
-            Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM favorites WHERE title = \"" + mTitle + "\"", null);
+            Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM tattoo WHERE title = \"" + mTitle + "\"", null);
             c.moveToFirst();
             int titleIndex = c.getColumnIndex("title");
             String title = c.getString(titleIndex);
@@ -197,7 +197,7 @@ public class DetailActivityFragment extends Fragment {
 
                 sqLiteDatabase = dbHandler.getWritableDatabase();
 
-                sqLiteDatabase.delete("favorites", "title == " + "\"" + mTitle + "\"", null);
+                sqLiteDatabase.delete("tattoo", "title == " + "\"" + mTitle + "\"", null);
 
                 sqLiteDatabase.close();
 
@@ -219,7 +219,7 @@ public class DetailActivityFragment extends Fragment {
                 values.put("title", mTitle);
                 values.put("image", posterByteArray);
 
-                sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                sqLiteDatabase.insertWithOnConflict("tattoo", null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
                 sqLiteDatabase.close();
 
@@ -239,7 +239,7 @@ public class DetailActivityFragment extends Fragment {
             values.put("title", mTitle);
             values.put("image", posterByteArray);
 
-            sqLiteDatabase.insertWithOnConflict("favorites", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+            sqLiteDatabase.insertWithOnConflict("tattoo", null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
             sqLiteDatabase.close();
 
@@ -264,7 +264,7 @@ public class DetailActivityFragment extends Fragment {
 
         try{
 
-        Cursor c = db.rawQuery("SELECT * FROM favorites WHERE title = \"" + mTitle + "\"", null);
+        Cursor c = db.rawQuery("SELECT * FROM tattoo WHERE title = \"" + mTitle + "\"", null);
         String title ="";
 
         if(c.moveToFirst()!=false){
