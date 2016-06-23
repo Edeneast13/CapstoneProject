@@ -20,10 +20,10 @@ public class DbHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String query = "CREATE TABLE "+ FavoritesContract.FavoritesEntry.TABLE_NAME + "(" +
-                FavoritesContract.FavoritesEntry.COLUMN_ID + " INTEGER PRIMARY KEY, " +
-                FavoritesContract.FavoritesEntry.COLUMN_TITLE + " TEXT, " +
-                FavoritesContract.FavoritesEntry.COLUMN_IMAGE + " BLOB" +
+        String query = "CREATE TABLE "+ TattooContract.TattooEntries.TABLE_NAME + "(" +
+                TattooContract.TattooEntries._ID + " INTEGER PRIMARY KEY, " +
+                TattooContract.TattooEntries.COLUMN_TITLE + " TEXT, " +
+                TattooContract.TattooEntries.COLUMN_IMAGE + " BLOB" +
                 ");";
 
         db.execSQL(query);

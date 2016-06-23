@@ -1,9 +1,11 @@
 package com.brianroper.tattome.database;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -12,147 +14,236 @@ import android.support.annotation.Nullable;
 /**
  * Created by brianroper on 6/6/16.
  */
-public class TattooProvider extends ContentProvider {
+public class TattooProvider extends ContentProvider{
 
+    private static final UriMatcher sUriMatcher = buildUriMatcher();
     private DbHandler mDbHandler;
-    private static final String AUTHORITY = "com.brianroper.tattome.TattooProvider";
-    private static final String FAVORITES_BASE_PATH = "favorites";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + FAVORITES_BASE_PATH);
-    private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-    public static final int FAVORITES = 100;
-    public static final int FAVORITES_TITLE = 101;
-    public static final int FAVORITES_IMAGE = 102;
 
+    //codes for UriMatcher
+    private static final int TATTOO = 100;
 
-    static{
+    private static UriMatcher buildUriMatcher(){
 
-        sUriMatcher.addURI(AUTHORITY, FAVORITES_BASE_PATH, FAVORITES);
-        sUriMatcher.addURI(AUTHORITY, FAVORITES_BASE_PATH + "/#", FAVORITES_TITLE);
-        sUriMatcher.addURI(AUTHORITY, FAVORITES_BASE_PATH + "/#", FAVORITES_IMAGE);
+        final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
+        final String authority = TattooContract.CONTENT_AUTHORITY;
 
+        matcher.addURI(authority, TattooContract.TattooEntries.TABLE_NAME, 100);
+
+        return matcher;
     }
 
     @Override
-    public boolean onCreate() {
+    public boolean onCreate(){
 
         mDbHandler = new DbHandler(getContext());
-        return false;
+
+        return true;
     }
 
-    @Nullable
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public String getType(Uri uri){
 
-        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
-        builder.setTables(FavoritesContract.FavoritesEntry.TABLE_NAME);
+        final int match = sUriMatcher.match(uri);
 
-        int uriType = sUriMatcher.match(uri);
+        switch(match){
 
-        switch(uriType){
+            case TATTOO:{
 
-            case FAVORITES_TITLE:
+                return TattooContract.TattooEntries.CONTENT_DIR_TYPE;
+            }
+            default:{
 
-                builder.appendWhere(FavoritesContract.FavoritesEntry.COLUMN_TITLE + "="
-                        + uri.getLastPathSegment());
-                break;
-
-            case FAVORITES_IMAGE:
-
-                builder.appendWhere(FavoritesContract.FavoritesEntry.COLUMN_IMAGE + "="
-                        + uri.getLastPathSegment());
-                break;
-
-            case FAVORITES:
-                break;
-
-            default: throw new IllegalArgumentException("Unknown Uri");
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
         }
-
-        Cursor cursor = builder.query(mDbHandler.getReadableDatabase(),
-                projection, selection, selectionArgs, null, null, sortOrder);
-
-        cursor.setNotificationUri(getContext().getContentResolver(), uri);
-
-        return cursor;
     }
 
-    @Nullable
     @Override
-    public String getType(Uri uri) {
-        return null;
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder){
+
+        Cursor retCursor;
+
+        switch(sUriMatcher.match(uri)){
+
+            case TATTOO:{
+
+                retCursor = mDbHandler.getReadableDatabase().query(
+                        TattooContract.TattooEntries.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+
+                return retCursor;
+            }
+            default:{
+
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
+        }
     }
 
-    @Nullable
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(Uri uri, ContentValues values){
 
-        int uriType = sUriMatcher.match(uri);
+        final SQLiteDatabase db = mDbHandler.getWritableDatabase();
+        Uri returnUri;
 
-        SQLiteDatabase db = mDbHandler.getWritableDatabase();
+        switch(sUriMatcher.match(uri)){
 
-        long id = 0;
+            case TATTOO:{
 
-        switch (uriType){
+                long _id = db.insert(TattooContract.TattooEntries.TABLE_NAME, null, values);
 
-            case FAVORITES:
+                if(_id > 0){
 
-                id = db.insert(FavoritesContract.FavoritesEntry.TABLE_NAME, null, values);
+                    returnUri = TattooContract.TattooEntries.buildTattooUri(_id);
+                }
+                else{
 
+                    throw new android.database.SQLException("Fauled to insert row into: " + uri);
+                }
                 break;
+            }
 
-            default: throw new IllegalArgumentException();
+            default:{
+
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
-
-        return Uri.parse(FavoritesContract.FavoritesEntry.TABLE_NAME
-                + "/" + id);
+        return returnUri;
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
-    }
+    public int delete(Uri uri, String selection, String[] selectionArgs){
 
-    @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        final SQLiteDatabase db = mDbHandler.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        int numDeleted;
 
-        int uriType = sUriMatcher.match(uri);
+        switch(match){
 
-        SQLiteDatabase db = mDbHandler.getWritableDatabase();
+            case TATTOO:
 
-        int rowsUpdated = 0;
+                numDeleted = db.delete(TattooContract.TattooEntries.TABLE_NAME, selection, selectionArgs);
 
-        switch (uriType){
+                //reset the id
+                db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + TattooContract.TattooEntries.TABLE_NAME + "'");
 
-            case FAVORITES:
-
-                rowsUpdated = db.update(FavoritesContract.FavoritesEntry.TABLE_NAME,
-                        values,
-                        selection,
-                        selectionArgs);
                 break;
 
-            case FAVORITES_TITLE:
-
-                rowsUpdated = db.update(FavoritesContract.FavoritesEntry.COLUMN_TITLE,
-                        values,
-                        selection,
-                        selectionArgs);
-                break;
-
-            case FAVORITES_IMAGE:
-
-                rowsUpdated = db.update(FavoritesContract.FavoritesEntry.COLUMN_IMAGE,
-                        values,
-                        selection,
-                        selectionArgs);
-                break;
-
-            default: throw new IllegalArgumentException("Unknown Uri");
+            default: throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
 
-        return rowsUpdated;
+        return numDeleted;
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values){
+
+        final SQLiteDatabase db = mDbHandler.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+
+        switch(match){
+
+            case TATTOO:
+
+                //allows for multiple transactions
+                db.beginTransaction();
+
+                //keep track of successful inserts
+                int numInserted = 0;
+
+                try{
+
+                    for(ContentValues value : values){
+
+                        if(value == null){
+
+                            throw new IllegalArgumentException("Cannot have null content values");
+                        }
+
+                        long _id = -1;
+
+                        try{
+
+                            _id = db.insertOrThrow(TattooContract.TattooEntries.TABLE_NAME, null, value);
+                        }
+                        catch(SQLiteConstraintException e){
+
+                            e.printStackTrace();
+                        }
+
+                        if(_id != -1){
+
+                            numInserted++;
+                        }
+                    }
+
+                    if(numInserted > 0){
+
+                        db.setTransactionSuccessful();
+                    }
+                }
+                finally{
+
+                    db.endTransaction();
+                }
+
+                if(numInserted > 0){
+
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+
+                return numInserted;
+
+            default:
+
+                return super.bulkInsert(uri, values);
+        }
+    }
+
+    @Override
+    public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs){
+
+        final SQLiteDatabase db = mDbHandler.getWritableDatabase();
+        int numUpdated = 0;
+        final int match = sUriMatcher.match(uri);
+
+
+
+        if(contentValues == null){
+
+            throw new IllegalArgumentException("Cannot have null content values");
+        }
+
+        switch(match){
+
+            case TATTOO: {
+
+                numUpdated = db.update(TattooContract.TattooEntries.TABLE_NAME,
+                        contentValues,
+                        TattooContract.TattooEntries._ID + " = ?",
+                        new String[] {String.valueOf(ContentUris.parseId(uri))});
+
+                break;
+            }
+
+            default:{
+
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
+        }
+
+        if(numUpdated > 0){
+
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return numUpdated;
     }
 }
