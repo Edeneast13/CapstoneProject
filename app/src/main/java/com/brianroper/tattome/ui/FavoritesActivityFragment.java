@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.brianroper.tattome.R;
 import com.brianroper.tattome.database.DbHandler;
-import com.brianroper.tattome.database.Favorites;
+import com.brianroper.tattome.database.Tattoo;
 import com.brianroper.tattome.util.BitmapConvertTask;
 import com.brianroper.tattome.util.ByteArrayConvertTask;
 import com.brianroper.tattome.util.FavoritesAdapter;
@@ -55,7 +55,7 @@ public class FavoritesActivityFragment extends Fragment {
     private String[] userRoot;
     private final String FIREBASE_BUCKET = "gs://tattoo-b7ce6.appspot.com";
     private ArrayList<Uri> mDownloadUriList = new ArrayList<Uri>();
-    private ArrayList<Favorites> mFavoritesList = new ArrayList<Favorites>();
+    private ArrayList<Tattoo> mFavoritesList = new ArrayList<Tattoo>();
 
     public FavoritesActivityFragment() {
     }
@@ -269,7 +269,7 @@ public class FavoritesActivityFragment extends Fragment {
                 Log.i("Upload: ", "success");
                 Log.i("URI: ", downloadUri.toString());
 
-                Favorites favorite = new Favorites();
+                Tattoo favorite = new Tattoo();
                 favorite.setTitle(title);
                 favorite.setTattooUrl(downloadUri);
 
@@ -280,7 +280,7 @@ public class FavoritesActivityFragment extends Fragment {
         setFavoritesToFirebaseDatabase();
     }
 
-    public void populateViewWithFirebaseStorage(ArrayList<Favorites> favorites){
+    public void populateViewWithFirebaseStorage(ArrayList<Tattoo> favorites){
 
         for (int i = 0; i < mFavoritesList.size(); i++) {
 
@@ -304,7 +304,7 @@ public class FavoritesActivityFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Favorites favorites = dataSnapshot.getValue(Favorites.class);
+                Tattoo favorites = dataSnapshot.getValue(Tattoo.class);
                 mFavoritesList.add(favorites);
             }
 
